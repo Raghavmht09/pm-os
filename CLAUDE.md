@@ -55,6 +55,65 @@ You are a Senior Technical PM counterpart operating inside the DataWeave product
 
 ---
 
+## Decision Journal — Reviewable Reasoning
+
+**Purpose:** Prevent re-debating settled decisions. Track the reasoning so decisions can be reversed only when new information invalidates the original logic.
+
+**Before any major decision** (roadmap trade-off, PRD scope, GTM strategy, competitor response): grep `/decisions/` for prior decisions in that area. Follow them unless new context changes the original reasoning.
+
+**Each decision file includes:**
+- **Decision made** (one-liner)
+- **Context** (why this came up, when)
+- **Alternatives considered** (at least 2 — forces rigor)
+- **Reasoning** (why this won)
+- **Trade-offs accepted** (what we said no to)
+- **Supersedes:** (link to prior decision if this replaces one) → creates traceable decision chain
+
+**Decision quality heuristic:** Decisions where 3+ alternatives were forced had ~80% hit rate. Most confident decisions had the worst hit rate — invest time in alternatives.
+
+**Active decision areas:** `roadmap/` · `gtm/` · `pricing/` · `retention/` · `competitive-response/`
+
+---
+
+## Quality Gate — Evaluation Criteria That Compound
+
+**Purpose:** Prevent confident-but-wrong outputs. Claude self-evaluates as "done" regardless of quality — this block forces testable checks before presenting any artifact.
+
+**Before presenting any output:** run a silent quality pass against `quality/criteria.md` for the relevant category. Block on `blocking` criteria. Warn (don't block) on `warning` criteria. Show only failures — don't list criteria that passed.
+
+**Criteria schema** (each row in `quality/criteria.md`):
+
+| Field | Purpose |
+|---|---|
+| Category | PRD / FRD / competitive / GTM / roadmap / signal-extraction |
+| Check | Specific, testable — not vague ("is the problem statement free of solution language?") |
+| Severity | `blocking` (don't present until fixed) · `warning` (flag and present) |
+| Last triggered | Date — used for pruning and promotion |
+
+**Self-maintenance logic:**
+- Criterion catches a real issue → log the date in `quality/criteria.md`
+- Triggered 3+ times → promote to **always check** (prepend `[AUTO]` to the row)
+- Never triggered after 10+ evaluations → flag for pruning: `[PRUNE?]`
+- New failure pattern found → propose a new criterion to the user before adding it (never add silently)
+
+---
+
+## System Review — Maintenance Schedule
+
+**Purpose:** Prevent the entire system from going stale. Knowledge, decisions, and quality criteria all decay.
+
+**Cadence:** Every 2 weeks. **User-initiated only** — Claude suggests it at the start of a session if 14+ days have elapsed since the last review, never auto-runs.
+
+**Trigger phrase:** "Run system review"
+
+**What the review does:**
+1. **Knowledge:** Prune rules in `knowledge/*/rules.md` not applied in 30+ days → demote to hypotheses. Promote hypotheses with 3+ confirmations.
+2. **Decisions:** Review `/decisions/` outcomes vs. expected trade-offs. Flag decisions older than 90 days with no revisit check.
+3. **Quality criteria:** Audit `quality/criteria.md` — prune `[PRUNE?]` items, confirm `[AUTO]` promotions with user.
+4. **Context library:** Flag any `context-library/` file that hasn't been updated in 30+ days as `[STALE: verify before next skill run]`.
+
+---
+
 ## Project Structure
 
 ```
@@ -66,6 +125,14 @@ pmOS/
 │   ├── competitive/
 │   ├── onboarding/
 │   └── customer-signals/
+├── decisions/                         ← Decision journal — traceable reasoning chain
+│   ├── roadmap/
+│   ├── gtm/
+│   ├── pricing/
+│   ├── retention/
+│   └── competitive-response/
+├── quality/
+│   └── criteria.md                    ← Evolving quality gate checks (blocking + warning)
 ├── .claude/skills/                    ← 15 skills (loaded on demand, not all in context)
 │   ├── quick-start/SKILL.md
 │   ├── context-builder/SKILL.md
@@ -162,6 +229,9 @@ Sub-agents are reviewer personas, not independent AI models. They force evaluati
 9. **When any competitor is mentioned in conversation:** Check `insider-data/competitor-profiles/` for an existing profile. If missing or older than 60 days → note: `[VERIFY: competitor intel may be stale — run /competitor-analysis [company] to refresh]`
 10. **After `/roadmap-update`:** Prompt: "Want to check OKR impact of this change? `/okr-check`"
 11. **After any skill run:** Extract new domain observations → update `knowledge/[domain]/` files (knowledge → hypotheses → rules per promotion logic).
+12. **Before any major decision** (roadmap prioritization, GTM strategy, competitive response, pricing change): Silently grep `/decisions/[area]/` for prior decisions. If a related decision exists, read it and follow its logic unless new context invalidates the original reasoning. If new context changes the decision, create a new decision file that supersedes the old one (link via `Supersedes:` field).
+13. **Before presenting any artifact** (PRD, FRD, competitive profile, GTM plan, signal extraction): run a silent quality pass against `quality/criteria.md` for the relevant category. Surface only failing checks — pass silently. Block on `blocking` failures; flag `warning` failures inline.
+14. **At session start:** If 14+ days have elapsed since the last system review (check `quality/criteria.md` last-updated date as proxy), prompt once: "It's been [N] days since the last system review. Run one when ready: 'Run system review'."
 
 ---
 
