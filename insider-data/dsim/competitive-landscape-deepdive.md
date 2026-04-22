@@ -41,12 +41,48 @@ Across our primary competitors, the dividing line is now between **activation-he
 
 - **The Shift:** Under Publicis ownership, Profitero is pushing deeper into incrementality through measurement partnerships rather than pure in-house causal models. They are increasingly positioning their digital shelf monitoring as the foundational layer *needed* to run accurate incrementality tests, although they prioritize serving the broader Publicis agency ecosystem.
 
+### 5. Incremental.com
+*Movement toward DSIM value proposition: **HIGH — Closest threat in measurement-only category***
+*Added: April 21, 2026 — surfaced via live web research*
+
+- **What they are:** Purpose-built retail media incrementality measurement platform. No activation. Official **Walmart Connect measurement partner** (April 2025). WPP Media named them their first "agency Connected Partner." Multi-retailer model across 100+ RMNs. Partnerships with Skai (Bayer collaboration awarded I-COM Data Creativity 2025).
+- **Core model:** Cross-retailer incrementality measurement using geo-lift, causal inference, and Walmart Connect direct API integration. Measures net-new incremental revenue per campaign.
+- **How they measure incrementality:** Campaign-scoped, post-period iROAS using causal inference / holdout methodology. API-driven integration with Walmart Connect data. No shelf-signal integration (availability, SoS, content are not modeled as levers). No store-cluster resolution.
+- **Key accounts:** WPP agency ecosystem, Bayer. [VERIFY: current CPG brand reference accounts — incremental.com]
+- **Pricing:** Not publicly listed. [VERIFY]
+
+**Why this matters for DSIM:** Incremental.com occupies the "vendor-neutral measurement" space that DSIM targets but without shelf signals. A brand already using Incremental.com will ask: "We already have independent incrementality measurement — why do we need DSIM?" The answer is precise: Incremental.com measures whether your campaign was incremental. DSIM measures whether your campaign was incremental AND whether availability was suppressing the lift AND which shelf lever would have produced more return per dollar. They are campaign-level; DSIM is lever-level.
+
+**Weaknesses vs. DSIM:**
+- No shelf-signal integration — availability, SoS, content are not modeled; they are ignored
+- National or campaign-level resolution — no store-cluster localization
+- Media-only model — cannot decompose across the 6 shelf levers DSIM models
+- No methodology published with MAPE/R² equivalents at DSIM's standard
+- Cross-retailer generalism vs. DSIM's Walmart-native depth
+
+**Displacement narrative:**
+Position as complementary in the short term: "Incremental.com answers 'did it work?' DSIM answers 'why did it work and what constrained it?' Use both if you have both." For competitive displacement: press on shelf-signal gap — "Can Incremental.com tell you how much your 78% in-stock rate was capping the incremental lift they measured? No. DSIM can." Store-cluster localization is the decisive differentiator.
+
+---
+
 ## Key Market Dynamics & DSIM Counter-Positioning
 
 1. **The Infrastructure Era:** Retail media has exited its pilot phase. Advertisers are complaining of "silos" between eCommerce Ops (shelf) and Digital Marketing (media). Because CommerceIQ and Pacvue lean primarily toward the media buyer, **DSIM must anchor with the RGM (Revenue Growth Management) persona** as the unifying layer.
 2. **Channel Conflict is a Feature, Not a Bug:** As Ascential joins Informa/Omnicom and Profitero pushes Publicis synergies, independent measurement platforms are becoming incredibly rare. The central pitch for DSIM over the activation giants is: "You wouldn't let the student grade their own test."
 3. **From ROAS to Granular Business Impact:** Incremental volume, contribution to margin, and net-new acquisition are the demands of 2026. DSIM's ability to model out *Store-Cluster* localization is the ultimate wedge, as competitors are still struggling to move beyond high-level "Retail Readiness" signals into granular geographic/cluster decomposition.
 
+## The Three-Way Competitive Split (Updated April 2026)
+
+The market now has three distinct categories — not two. DSIM must position itself against all three:
+
+| Category | Players | What They Solve | DSIM Differentiation |
+|---|---|---|---|
+| **Activation-Led** | CommerceIQ, Pacvue | "Optimize my bids right now" | No activation conflict; shelf-native vs. media-native; CFO-ready output |
+| **Campaign Measurement** | Incremental.com, Skai | "Did this campaign generate net-new sales?" | Shelf signals as first-class inputs; store-cluster resolution; cross-lever decomposition |
+| **Shelf-Native Diagnostic** | DataWeave DSIM | "Which of my 6 shelf + media levers drove sales, and what should I change?" | Uncontested — no competitor in this quadrant |
+
 ## Next Steps for DSIM
 - We must aggressively push the integration of **"Store-Cluster"** methodology, as competitors like Pacvue and CommerceIQ are heavily integrating shelf metrics (like SOS and Availability) into their incrementality equations, but not at the store-cluster geographic level.
 - Formalize the term **"Diagnostic Incrementality"** in our external GTM positioning to counter Pacvue/CommerceIQ's "Activation-led Incrementality."
+- **Add Incremental.com to all competitive battlecards** — they are the closest positioning neighbor in the measurement-only space and will come up in deals. Displacement narrative: "Incremental.com answers 'did it work?' DSIM answers 'why did it work and what constrained it?'"
+- **Watch Walmart Connect's own measurement build** — Walmart Connect is investing in first-party incrementality ("search incrementality, first-party measurement" per Walmart Connect 2026 content). If Walmart builds this natively into Scintilla's Insights Activation module, it could compress the "independent measurement" argument. DSIM's moat remains: shelf-signal integration + store-cluster localization + vendor neutrality from any retailer-owned tool.
