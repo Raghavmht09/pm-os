@@ -89,7 +89,7 @@ const availability_b64 = loadImageAsBase64("availability-media.png");
   s.addShape(prs.shapes.RECTANGLE, { x: 0.4, y: 1.22, w: 12.5, h: 0.02, fill: { color: BORDER } });
   const cards = [
     { stat: "$45B+", label: "US retail media\nspend in 2025", sub: "Walmart: $4.5B+ of that", accent: NAVY_MID },
-    { stat: "71%", label: "of advertisers name\nincrementality as top KPI", sub: "Yet most still measure via platform ROAS", accent: ORANGE },
+    { stat: "75%", label: "of CPG advertisers name\nincrementality as #1 challenge", sub: "Only 20% can actually act on it (Skai 2026 survey)", accent: ORANGE },
     { stat: "1 of 3", label: "market categories\nremains uncontested", sub: "Shelf-native diagnostic — DataWeave's space", accent: GREEN },
   ];
   cards.forEach((c, i) => {
@@ -103,7 +103,7 @@ const availability_b64 = loadImageAsBase64("availability-media.png");
   s.addShape(prs.shapes.RECTANGLE, { x: 0.4, y: 4.35, w: 12.5, h: 1.35, fill: { color: CARD_HL } });
   s.addShape(prs.shapes.RECTANGLE, { x: 0.4, y: 4.35, w: 0.08, h: 1.35, fill: { color: NAVY_MID } });
   s.addText(
-    "The structural gap: brands running Walmart Connect campaigns can measure ROAS. They cannot measure whether that ROAS reflects truly incremental sales — or whether an availability issue, low Share of Search, or poor content silently suppressed the lift they paid for.",
+    "The structural gap: CommerceIQ launched a standalone Incrementality Module in Dec 2025 — observational model, 14-day window, no shelf signals. Pacvue's console is Amazon-first; Walmart store-cluster coverage unconfirmed. Neither can tell a brand whether a 72% in-stock rate or a content gap capped the lift they paid $1M+ to generate.",
     { x: 0.65, y: 4.45, w: 12.0, h: 1.1, fontSize: 14, color: TEXT_D, fontFace: "Calibri", margin: 0, wrap: true }
   );
 }
@@ -118,9 +118,9 @@ const availability_b64 = loadImageAsBase64("availability-media.png");
     fontSize: 24, bold: true, color: TEXT_D, fontFace: "Calibri", margin: 0
   });
   const compCards = [
-    { title: "Activation-Led", subtitle: "CommerceIQ, Pacvue", desc: "Optimize bids right now", color: NAVY_MID },
-    { title: "Campaign Measurement", subtitle: "Incremental.com, Skai", desc: "Did this generate net-new sales?", color: ORANGE },
-    { title: "Shelf-Native Diagnostic", subtitle: "DataWeave DSIM", desc: "Why did it work? What constrained it?", color: GREEN },
+    { title: "Activation-Led", subtitle: "CommerceIQ · Pacvue · Skai", desc: "Grade their own media spend. CIQ: observational model, 14-day window, no holdout. Pacvue: Amazon-first, Walmart store-cluster unconfirmed. Conflict: they measure what they sell.", color: NAVY_MID },
+    { title: "Campaign Measurement", subtitle: "Incremental.com · Walmart Connect", desc: "Did media generate net-new sales? Shelf signals used as noise to remove — not as outputs. No store-cluster decomposition. Incremental.com: WPP Connected Partner; Walmart coverage since July 2024.", color: ORANGE },
+    { title: "Shelf-Native Diagnostic", subtitle: "DataWeave DSIM (uncontested)", desc: "Why did it work? Which of 6 shelf + media levers drove lift — at the store-cluster level? Shelf signals are the deliverable, not a confounder. No activation stake. Published 5.9% MAPE, R²=91%.", color: GREEN },
   ];
   compCards.forEach((c, i) => {
     const x = 0.4 + i * 4.28;
@@ -134,7 +134,7 @@ const availability_b64 = loadImageAsBase64("availability-media.png");
   s.addShape(prs.shapes.RECTANGLE, { x: 0.4, y: 4.8, w: 12.5, h: 1.5, fill: { color: CARD_HL } });
   s.addShape(prs.shapes.RECTANGLE, { x: 0.4, y: 4.8, w: 0.08, h: 1.5, fill: { color: NAVY_MID } });
   s.addText(
-    "DSIM occupies the uncontested quadrant: vendor-neutral measurement where shelf signals (OSA, SoS, content) are first-class inputs alongside media spend — and localized to store clusters, not just channel-level.",
+    "DSIM occupies the uncontested quadrant. No activation platform (CommerceIQ, Pacvue, Skai) offers Walmart store-cluster localization. No measurement platform (Incremental.com, Walmart Connect) surfaces shelf signals as actionable outputs. Profitero monitors — it does not attribute. DSIM is the only model that answers: which shelf lever constrained the lift I paid for, and where?",
     { x: 0.65, y: 4.92, w: 12.0, h: 1.25, fontSize: 13, color: TEXT_D, fontFace: "Calibri", margin: 0, wrap: true }
   );
 }
@@ -170,7 +170,7 @@ const availability_b64 = loadImageAsBase64("availability-media.png");
   s.addShape(prs.shapes.RECTANGLE, { x: 0.4, y: 5.5, w: 12.5, h: 1.2, fill: { color: CARD_HL } });
   s.addShape(prs.shapes.RECTANGLE, { x: 0.4, y: 5.5, w: 0.08, h: 1.2, fill: { color: NAVY_MID } });
   s.addText(
-    "The PoC validates shelf-signal integration into incrementality models. Kids/Baby category showed +12% incremental lift in Adult segment, proving category halo effect — a lever CommerceIQ and Pacvue cannot decompose.",
+    "The PoC validates shelf-signal integration into incrementality models. Kids/Baby category showed +12% incremental lift in Adult segment, proving category halo effect — a lever CommerceIQ and Pacvue cannot decompose, and one that Incremental.com would strip out as a confounder rather than surface as an opportunity.",
     { x: 0.65, y: 5.62, w: 12.0, h: 1.0, fontSize: 13, color: TEXT_D, fontFace: "Calibri", margin: 0, wrap: true }
   );
 }

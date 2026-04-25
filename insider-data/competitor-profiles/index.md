@@ -1,5 +1,5 @@
 # Competitor Profiles Index
-Last updated: 2026-04-06
+Last updated: 2026-04-24
 
 This folder contains per-competitor intelligence profiles for DataWeave's primary competitive landscape. Profiles are generated and maintained by `/competitor-analysis [company]`. Do not edit profiles manually — run the skill to refresh.
 
@@ -9,7 +9,7 @@ This folder contains per-competitor intelligence profiles for DataWeave's primar
 
 | Company | Focus Area | Competes With | Profile | Last Updated |
 |---|---|---|---|---|
-| **Profitero** | Pricing Intelligence, Digital Shelf Analytics | Pricing Intelligence, Digital Shelf | [profitero.md](profitero.md) | [run /competitor-analysis Profitero] |
+| **Profitero** | Digital Shelf Analytics, Shelf-Intelligent Media Activation | DSA monitoring, incrementality-adjacent (via Pacvue integration), DSIM complement/displacement | [profitero.md](profitero.md) | April 24, 2026 |
 | **Salsify** | Product Experience Management, Content Syndication | Content Analytics, Attribute Extraction | [salsify.md](salsify.md) | [run /competitor-analysis Salsify] |
 | **Syndigo** | Content Management, Digital Commerce | Content Analytics, Content Optimization | [syndigo.md](syndigo.md) | [run /competitor-analysis Syndigo] |
 | **Intelligence Node** | Pricing Intelligence, Competitive Analytics | Pricing Intelligence, Assortment Analytics | [intelligence-node.md](intelligence-node.md) | [run /competitor-analysis "Intelligence Node"] |
@@ -23,7 +23,7 @@ Surfaced from `insider-data/battlecards/DSIM_Competitive_BattleCards_1.pptx` (Ap
 | **CommerceIQ** | HIGH — closest 1:1 match | iROAS optimization + digital shelf | [run /competitor-analysis CommerceIQ] |
 | **Ascential Edge / NIQ** | HIGH | Digital commerce analytics + NIQ POS data | [run /competitor-analysis "Ascential Edge"] |
 | **Pacvue** | MEDIUM | Walmart Connect activation + measurement layers | [run /competitor-analysis Pacvue] |
-| **Skai (ex-Kenshoo)** | MEDIUM | Retail media + incrementality experimentation | [run /competitor-analysis Skai] |
+| **Skai (ex-Kenshoo)** | MEDIUM | Retail media + incrementality experimentation | [skai.md](skai.md) — April 24, 2026 |
 | **Analytic Partners** | STRUCTURAL | MMM / CFO-level measurement conversation | [run /competitor-analysis "Analytic Partners"] |
 | **Walmart Connect** | SPECIAL CASE | Free first-party incrementality — narrow but deterministic | [no profile needed — monitor Walmart Luminate updates] |
 

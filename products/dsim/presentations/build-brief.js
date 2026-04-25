@@ -60,7 +60,7 @@ s.addText("CONFIDENTIAL", {
 s.addShape(prs.shapes.RECTANGLE, { x: 0.1, y: 1.2, w: 8.4, h: 0.52, fill: { color: CARD_HL } });
 s.addShape(prs.shapes.RECTANGLE, { x: 0.1, y: 1.2, w: 0.06, h: 0.52, fill: { color: NAVY_MID } });
 s.addText(
-  "Brands running Walmart Connect campaigns can measure ROAS — but not whether that ROAS reflects truly incremental sales, or whether an availability issue, low Share of Search, or poor content silently suppressed the lift they paid for.",
+  "75% of CPG advertisers call incrementality their #1 measurement challenge — yet every platform grading their own spend (CommerceIQ: observational model, 14-day window; Pacvue: Amazon-first, no Walmart store-cluster) tells you ROAS, not whether availability, Share of Search, or content silently capped the lift you paid for.",
   { x: 0.3, y: 1.23, w: 8.0, h: 0.46, fontSize: 9, color: TEXT_D, fontFace: "Calibri", margin: 0, wrap: true }
 );
 
@@ -73,19 +73,17 @@ s.addText("What DSIM Does", {
 const diffs = [
   {
     title: "Diagnostic Incrementality",
-    body: "Decomposes sales lift across 6 shelf + media levers — not just 'did it work?' but why it worked and what constrained it.",
+    body: "Decomposes sales lift across 6 shelf + media levers with published 5.9% MAPE and R²=91%. Competitors (CommerceIQ, Pacvue) publish no equivalent accuracy metrics.",
     color: NAVY_MID
   },
   {
     title: "Store-Cluster Resolution",
-    // Fix: removed forward-reference to "Lactalis PoC"
-    body: "Localizes attribution to store clusters, not channel-level averages — exposing geographic misallocation invisible in aggregate reporting.",
+    body: "Localizes attribution to store behavioral clusters — exposing geographic misallocation invisible in aggregate ROAS. No activation platform (CommerceIQ, Pacvue, Skai) offers this for Walmart.",
     color: ORANGE
   },
   {
     title: "Vendor-Neutral Attribution",
-    // Fix: cleaned up awkward sentence
-    body: "No activation platform conflict. DSIM is the independent measurement layer — a score no platform can produce for its own campaigns.",
+    body: "No activation stake, no agency ownership. Unlike Profitero (Publicis-owned since 2026) and CommerceIQ/Pacvue (grade their own campaigns), DSIM is the number your CFO can defend.",
     color: GREEN
   },
 ];
