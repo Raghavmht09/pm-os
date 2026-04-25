@@ -33,7 +33,26 @@ Hypotheses pending deal validation. Confirmed 3+ times → promote to rules.md. 
 
 ---
 
+- **H6:** The primary buying persona for DSIM is the eCommerce / Retail Media Leader, not the Finance / RGM Leader — even though finance has the budget authority.
+  - Status: Unconfirmed — leadership transcript (April 24) explicitly couldn't resolve this question
+  - Supporting: Lactalis primary user is eCommerce team (per Brian on the call); eCommerce team owns Walmart Connect budget day-to-day
+  - Counter signal: Karthik raised the finance angle compellingly — finance is the *approver* of budget requests and may be the more receptive buyer for vendor-neutral measurement; eCommerce teams unlikely to voluntarily cut budgets even if data shows overspend
+  - Still needs: CSM validation across 2–3 accounts on who actually initiates measurement conversations
+
+- **H7:** DSIM's reallocation story (move X from channel A to channel B) is more compelling than the incrementality story (did this work?) for the initial sale.
+  - Status: Unconfirmed — raised in leadership transcript (April 24) as a gap in current pitch
+  - Supporting: Leadership explicitly said "all three campaign types say increase your spend" — the reallocation framing is missing; Karthik noted eCommerce teams won't cut budgets unless reallocation to a better channel is explicit
+  - Counter signal: Lactalis engagement didn't include explicit reallocation recommendation yet; unclear if they would have valued it differently
+  - Still needs: Add reallocation output to Lactalis Tableau, show in next delivery, measure reaction
+
+- **H8:** IAB's published anti-MMM-for-retail-media research creates a tailwind for DSIM positioning — brands are already questioning whether their current measurement framework is correct.
+  - Status: Partially confirmed by secondary research
+  - Supporting: Three IAB reports (April 2024, October 2024, November 2025) with named contributions from Walmart Connect head and major CPG brands; Jeeva confirmed "underlying frustration" signal from brand conversations; Dentsu + Northwestern echo same thesis
+  - Counter signal: Eddie (leadership) explicitly cautious about leaning on anti-MMM positioning — wants to differentiate from MMM, not be seen as competing with it
+  - Still needs: Customer validation — do RGM / finance buyers at CPGs know about IAB research, or does it only resonate with measurement/media specialists?
+
 ## Hypotheses to Retire or Promote at Next Review
 - If H3 gets deal evidence → promote to rules.md
 - If H5 is confirmed by sales team → promote to rules.md
 - H4 update warranted: "CIQ displacement motion changed — now includes methodology-first head-to-head for measurement-only CIQ standalone module accounts"
+- H6 and H7: validate via CSM conversations before next leadership session (target: May 2026)
