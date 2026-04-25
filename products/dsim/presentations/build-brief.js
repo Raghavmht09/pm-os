@@ -41,13 +41,13 @@ s.addText("DSIM", {
   fontSize: 26, bold: true, color: WHITE, fontFace: "Calibri", margin: 0
 });
 // Fix: full tagline fits within header; single line with em dash
-s.addText("Closing the attribution gap between media spend and shelf outcomes on Walmart", {
+s.addText("Which of your 6 shelf and media levers drove Walmart sales — by store cluster. Not ROAS. Causation.", {
   x: 0.3, y: 0.8, w: 5.5, h: 0.33,
   fontSize: 9, color: ICE, fontFace: "Calibri", italic: true, margin: 0, wrap: true
 });
 
 // Audience label (top-right of header) — increased contrast
-s.addText("For: RGM Leaders  ·  eCommerce Leads", {
+s.addText("For: eCommerce Leads  ·  Finance / RGM  ·  Brand", {
   x: 4.8, y: 0.38, w: 3.45, h: 0.28,
   fontSize: 8.5, color: "8BAFD8", fontFace: "Calibri", align: "right", margin: 0
 });

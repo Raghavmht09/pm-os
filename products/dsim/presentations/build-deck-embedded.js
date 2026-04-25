@@ -139,6 +139,70 @@ const availability_b64 = loadImageAsBase64("availability-media.png");
   );
 }
 
+// SLIDE 3B: Who Buys DSIM — Three Buyer Personas
+{
+  const s = prs.addSlide();
+  s.background = { color: LIGHT_BG };
+  s.addShape(prs.shapes.RECTANGLE, { x: 0, y: 0, w: 0.14, h: 7.5, fill: { color: ORANGE } });
+  s.addText("Who Buys DSIM — Three Entry Points", {
+    x: 0.4, y: 0.22, w: 12.5, h: 0.55,
+    fontSize: 24, bold: true, color: TEXT_D, fontFace: "Calibri", margin: 0
+  });
+  s.addText("Positioning: Option B — Sales decomposition (which lever drove Walmart sales, at the store cluster level)", {
+    x: 0.4, y: 0.8, w: 12.5, h: 0.28,
+    fontSize: 11, color: TEXT_L, fontFace: "Calibri", italic: true, margin: 0
+  });
+  const personas = [
+    {
+      role: "eCommerce /\nRetail Media Lead",
+      owns: "Walmart Connect budget\n($500K–$5M+/yr)",
+      pain: "ROAS dropped. Doesn't know if it's a media problem or a shelf problem (72% in-stock eating impressions).",
+      dsim: "Shows which lever (availability, SoS, content, media) drove or capped the last campaign — and which clusters to fix first.",
+      oneliner: "Your ROAS is what the platform says happened. DSIM shows what actually drove the sale.",
+      color: NAVY_MID
+    },
+    {
+      role: "Finance /\nRGM Leader",
+      owns: "Budget approval, trade spend,\nJBP financial commitments",
+      pain: "eCommerce asks for more Walmart Connect budget. No independent data to verify if it's justified or if a shelf fix would cost less.",
+      dsim: "Vendor-neutral audit: is the constraint media spend or in-stock rate? The number the CFO can defend — not platform ROAS.",
+      oneliner: "Before approving the next Walmart Connect request, know whether the bottleneck is media or shelf.",
+      color: ORANGE
+    },
+    {
+      role: "Brand /\nCategory Manager",
+      owns: "Brand P&L, promotional calendar,\ncompetitive response",
+      pain: "NielsenIQ tells them a competitor took 2 points of share — 6 weeks after it happened. Can't connect shelf signals to dollar impact.",
+      dsim: "Quantifies what a competitor's SoS gain is worth in weekly lost sales — by store cluster. Early enough to respond.",
+      oneliner: "By the time Nielsen tells you a competitor took share, it happened 6 weeks ago. DSIM shows the signal that preceded it.",
+      color: GREEN
+    },
+  ];
+  personas.forEach((p, i) => {
+    const x = 0.4 + i * 4.28;
+    s.addShape(prs.shapes.RECTANGLE, { x, y: 1.18, w: 4.0, h: 5.9, fill: { color: WHITE }, shadow: makeShadow() });
+    s.addShape(prs.shapes.RECTANGLE, { x, y: 1.18, w: 4.0, h: 0.1, fill: { color: p.color } });
+    // Role
+    s.addText(p.role, { x: x + 0.2, y: 1.33, w: 3.6, h: 0.55, fontSize: 13, bold: true, color: p.color, fontFace: "Calibri", margin: 0, wrap: true });
+    // Owns
+    s.addText("Owns:", { x: x + 0.2, y: 1.94, w: 0.55, h: 0.22, fontSize: 8.5, bold: true, color: TEXT_L, fontFace: "Calibri", margin: 0 });
+    s.addText(p.owns, { x: x + 0.75, y: 1.94, w: 3.05, h: 0.4, fontSize: 8.5, color: TEXT_L, fontFace: "Calibri", margin: 0, wrap: true, italic: true });
+    // Divider
+    s.addShape(prs.shapes.RECTANGLE, { x: x + 0.2, y: 2.44, w: 3.6, h: 0.01, fill: { color: BORDER } });
+    // Pain
+    s.addText("Pain today:", { x: x + 0.2, y: 2.55, w: 3.6, h: 0.22, fontSize: 8.5, bold: true, color: TEXT_D, fontFace: "Calibri", margin: 0 });
+    s.addText(p.pain, { x: x + 0.2, y: 2.79, w: 3.6, h: 0.95, fontSize: 8.5, color: TEXT_M, fontFace: "Calibri", margin: 0, wrap: true });
+    // Divider
+    s.addShape(prs.shapes.RECTANGLE, { x: x + 0.2, y: 3.82, w: 3.6, h: 0.01, fill: { color: BORDER } });
+    // DSIM value
+    s.addText("DSIM gives them:", { x: x + 0.2, y: 3.93, w: 3.6, h: 0.22, fontSize: 8.5, bold: true, color: p.color, fontFace: "Calibri", margin: 0 });
+    s.addText(p.dsim, { x: x + 0.2, y: 4.17, w: 3.6, h: 0.95, fontSize: 8.5, color: TEXT_M, fontFace: "Calibri", margin: 0, wrap: true });
+    // One-liner
+    s.addShape(prs.shapes.RECTANGLE, { x: x + 0.2, y: 5.2, w: 3.6, h: 0.01, fill: { color: BORDER } });
+    s.addText("\u201C" + p.oneliner + "\u201D", { x: x + 0.2, y: 5.3, w: 3.6, h: 1.5, fontSize: 8, color: p.color, fontFace: "Calibri", margin: 0, wrap: true, italic: true, bold: true });
+  });
+}
+
 // SLIDE 4: Lactalis PoC
 {
   const s = prs.addSlide();
