@@ -1,0 +1,24 @@
+{
+  "name": "pm-os",
+  "version": "1.0.0",
+  "description": "A Claude Code operating system for Senior Technical PMs at DataWeave. It handles research-heavy, artifact-heavy, and analysis-heavy PM work so you can focus on judgment calls, stakeholder conversations, and strategic decisions.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Raghavmht09/pm-os.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Raghavmht09/pm-os/issues"
+  },
+  "homepage": "https://github.com/Raghavmht09/pm-os#readme",
+  "dependencies": {
+    "agent-browser": "^0.26.0"
+  }
+}
