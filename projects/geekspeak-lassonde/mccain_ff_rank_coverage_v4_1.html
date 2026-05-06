@@ -1,0 +1,1055 @@
+<!-- v4.1 · Card Grid + Sliding Panel -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lassonde · Share of Search Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Poppins', sans-serif; background: #f8fafc; min-height: 100vh; color: #0f172a; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 99px; }
+
+:root {
+  --indigo: #6366f1;
+  --indigo-light: #e0e7ff;
+  --emerald: #10b981;
+  --emerald-light: #d1fae5;
+  --amber: #f59e0b;
+  --amber-light: #fef3c7;
+  --red: #ef4444;
+  --green-dark: #16a34a;
+  --green: #22c55e;
+  --page-bg: #f8fafc;
+  --card-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+@keyframes slideIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+
+/* HEADER */
+.page-header {
+  background: #1a1f2e;
+  padding: 18px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.page-header-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+.page-header-sub {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+/* FILTER BAR */
+.filter-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #fff;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 10px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  min-width: 68px;
+}
+.pill {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.8rem;
+  padding: 4px 14px;
+  border-radius: 20px;
+  border: 1.5px solid #e2e8f0;
+  background: #fff;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.pill:hover { border-color: var(--indigo); color: var(--indigo); }
+.pill.active { background: var(--indigo); border-color: var(--indigo); color: #fff; font-weight: 600; }
+
+/* MAIN CONTENT */
+.main { padding: 24px 28px; }
+
+/* SECTION HEADER */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  margin-top: 32px;
+}
+.section-header:first-child { margin-top: 0; }
+.section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #374151;
+  padding-left: 12px;
+  border-left: 4px solid var(--indigo);
+}
+.section-title.emerald { border-left-color: var(--emerald); }
+.section-title.amber { border-left-color: var(--amber); }
+
+/* CARD PANEL WRAPPER */
+.card-panel-wrapper {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  transition: all 0.25s ease;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+  transition: all 0.25s ease;
+}
+
+/* RETAILER CARD */
+.retailer-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.18s;
+  border: 2px solid transparent;
+  animation: fadeUp 0.3s ease both;
+}
+.retailer-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); transform: translateY(-1px); }
+.retailer-card.active { border-color: var(--indigo); }
+.retailer-card.coverage-active { border-color: var(--emerald); }
+.retailer-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.badge-green { background: #dcfce7; color: #16a34a; }
+.badge-amber { background: #fef9c3; color: #92400e; }
+.badge-red { background: #fee2e2; color: #991b1b; }
+.badge-blue { background: var(--indigo-light); color: #4338ca; }
+.card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.card-hint {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  margin-top: 10px;
+}
+.sparkline-wrap { display: flex; align-items: flex-end; gap: 3px; height: 28px; }
+.spark-bar {
+  flex: 1;
+  border-radius: 3px 3px 0 0;
+  min-height: 4px;
+}
+
+/* SLIDING PANEL */
+.sliding-panel {
+  width: 0;
+  overflow: hidden;
+  transition: width 0.25s ease;
+  flex-shrink: 0;
+}
+.sliding-panel.open { width: 360px; }
+.panel-inner {
+  width: 360px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: -4px 0 20px rgba(0,0,0,0.12);
+  animation: slideIn 0.25s ease;
+  overflow: hidden;
+}
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  background: #f8fafc;
+}
+.panel-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+.panel-close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #94a3b8;
+  padding: 2px 6px;
+  border-radius: 6px;
+  line-height: 1;
+}
+.panel-close:hover { background: #f1f5f9; color: #374151; }
+.panel-kw-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #f8fafc;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.panel-kw-row:hover { background: #f8fafc; }
+.panel-kw-row.selected { background: #eef2ff; }
+.panel-kw-name {
+  flex: 1;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #374151;
+}
+.trend-arrow { font-size: 0.85rem; font-weight: 700; }
+.trend-bad { color: #ef4444; }
+.trend-good { color: #16a34a; }
+.trend-flat { color: #94a3b8; }
+
+/* CHARTS */
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 0;
+}
+.chart-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  padding: 16px;
+}
+.chart-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 12px;
+}
+.chart-wrap { position: relative; height: 240px; }
+
+/* DETAIL TABLE */
+.detail-section {
+  display: none;
+  margin-top: 24px;
+  animation: fadeUp 0.3s ease;
+}
+.detail-section.visible { display: block; }
+.detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.detail-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #374151;
+  padding-left: 12px;
+  border-left: 4px solid #6366f1;
+}
+.detail-close {
+  background: none;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 4px 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.8rem;
+  color: #64748b;
+  cursor: pointer;
+}
+.detail-close:hover { border-color: var(--red); color: var(--red); }
+.table-wrap { overflow-x: auto; border-radius: 12px; box-shadow: var(--card-shadow); }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  background: #fff;
+}
+thead th {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #64748b;
+  padding: 9px 10px;
+  text-align: center;
+  border-bottom: 1px solid #f1f5f9;
+  background: #f8fafc;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+}
+thead th:first-child, thead th:nth-child(2) { text-align: left; }
+tbody td {
+  padding: 8px 10px;
+  text-align: center;
+  border-bottom: 1px solid #f8fafc;
+}
+tbody td:first-child, tbody td:nth-child(2) { text-align: left; font-weight: 600; }
+tbody tr:hover td { background: #f8fafc; }
+.cell-r1 { background: #dcfce7; color: #15803d; font-weight: 700; border-radius: 4px; }
+.cell-r2 { background: #bbf7d0; color: #16a34a; font-weight: 600; border-radius: 4px; }
+.cell-r3 { background: #fef9c3; color: #92400e; font-weight: 600; border-radius: 4px; }
+.cell-r4 { background: #fee2e2; color: #991b1b; font-weight: 600; border-radius: 4px; }
+.cell-null { color: #cbd5e1; }
+.coverage-row td { background: #f0fdf4; font-weight: 700; font-size: 0.72rem; }
+
+@media (max-width: 768px) {
+  .charts-row { grid-template-columns: 1fr; }
+  .sliding-panel.open { width: 300px; }
+  .panel-inner { width: 300px; }
+  .main { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div>
+    <div class="page-header-title">Lassonde · Share of Search</div>
+    <div class="page-header-sub">Canada · 7 Retailers · 5 Keywords · Daily</div>
+  </div>
+</header>
+
+<div class="filter-bar">
+  <div class="filter-row">
+    <span class="filter-label">Retailer:</span>
+    <button class="pill active" onclick="setRetailerFilter('All')">All</button>
+    <button class="pill" onclick="setRetailerFilter('Walmart CA')">Walmart CA</button>
+    <button class="pill" onclick="setRetailerFilter('Loblaws')">Loblaws</button>
+    <button class="pill" onclick="setRetailerFilter('No Frills')">No Frills</button>
+    <button class="pill" onclick="setRetailerFilter('Metro')">Metro</button>
+    <button class="pill" onclick="setRetailerFilter('Real Canadian Superstore')">Real Canadian Superstore</button>
+    <button class="pill" onclick="setRetailerFilter('Costco')">Costco</button>
+    <button class="pill" onclick="setRetailerFilter('Sobeys')">Sobeys</button>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">Keyword:</span>
+    <button class="pill active" onclick="setKeywordFilter('All')">All</button>
+    <button class="pill" onclick="setKeywordFilter('frozen fries')">frozen fries</button>
+    <button class="pill" onclick="setKeywordFilter('potato chips')">potato chips</button>
+    <button class="pill" onclick="setKeywordFilter('savory snacks')">savory snacks</button>
+    <button class="pill" onclick="setKeywordFilter('pineapple juice')">pineapple juice</button>
+    <button class="pill" onclick="setKeywordFilter('apple juice')">apple juice</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- RANKING SECTION -->
+  <div class="section-header">
+    <div class="section-title">📊 Ranking</div>
+  </div>
+  <div class="card-panel-wrapper" id="ranking-wrapper">
+    <div class="card-grid" id="ranking-cards"></div>
+    <div class="sliding-panel" id="ranking-panel">
+      <div class="panel-inner">
+        <div class="panel-header">
+          <div class="panel-title" id="ranking-panel-title">Retailer · Keyword Ranking</div>
+          <button class="panel-close" onclick="closePanel('ranking')">×</button>
+        </div>
+        <div id="ranking-panel-body"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHARTS SECTION -->
+  <div class="section-header" style="margin-top:32px">
+    <div class="section-title amber">📈 Trends</div>
+  </div>
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">Avg Rank Trend <span style="font-weight:400;color:#94a3b8;font-size:0.72rem">(lower = better)</span></div>
+      <div class="chart-wrap"><canvas id="rankChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Coverage % Trend</div>
+      <div class="chart-wrap"><canvas id="coverageChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- COVERAGE SECTION -->
+  <div class="section-header" style="margin-top:32px">
+    <div class="section-title emerald">🎯 Coverage</div>
+  </div>
+  <div class="card-panel-wrapper" id="coverage-wrapper">
+    <div class="card-grid" id="coverage-cards"></div>
+    <div class="sliding-panel" id="coverage-panel">
+      <div class="panel-inner">
+        <div class="panel-header">
+          <div class="panel-title" id="coverage-panel-title">Retailer · Keyword Coverage</div>
+          <button class="panel-close" onclick="closePanel('coverage')">×</button>
+        </div>
+        <div id="coverage-panel-body"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAIL TABLE -->
+  <div class="detail-section" id="detail-section">
+    <div class="detail-header">
+      <div class="detail-title" id="detail-title">🔍 Detail View</div>
+      <button class="detail-close" onclick="closeDetail()">✕ Close</button>
+    </div>
+    <div class="table-wrap">
+      <table id="detail-table"></table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const RETAILERS = ['Walmart CA','Loblaws','No Frills','Metro','Real Canadian Superstore','Costco','Sobeys'];
+const KEYWORDS  = ['frozen fries','potato chips','savory snacks','pineapple juice','apple juice'];
+const MONTHS    = ['Jan-25','Feb-25','Mar-25','Apr-25','May-25','Jun-25','Jul-25','Aug-25','Sep-25','Oct-25','Nov-25','Dec-25'];
+
+// Sep-25 = index 8 → rank spike (worse), coverage dip
+// Premium retailers: Loblaws, Costco → better base ranks + coverage
+// Discount: No Frills → worse
+
+function seededRand(seed) {
+  let s = seed;
+  return function() {
+    s = (s * 1664525 + 1013904223) & 0xffffffff;
+    return (s >>> 0) / 0xffffffff;
+  };
+}
+function strToSeed(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+
+function mkRank(base, retailer, keyword) {
+  // base rank for the combo, then add monthly variation
+  const rand = seededRand(strToSeed(retailer + keyword));
+  const b = base;
+  return MONTHS.map((m, i) => {
+    let v = b + Math.round((rand() - 0.5) * 3);
+    if (i === 8) v = Math.min(20, v + Math.round(3 + rand() * 4)); // Sep spike
+    if (i === 9) v = Math.max(1, v - 1); // slight recovery
+    v = Math.max(1, Math.min(20, v));
+    return v;
+  });
+}
+
+function mkCov(base, retailer, keyword) {
+  const rand = seededRand(strToSeed(retailer + keyword));
+  return MONTHS.map((m, i) => {
+    let v = base + (rand() - 0.5) * 10;
+    if (i === 8) v -= 8 + rand() * 6; // Sep dip
+    if (i === 9) v += 3 + rand() * 3; // partial recovery
+    v = Math.max(35, Math.min(92, v));
+    return parseFloat(v.toFixed(1));
+  });
+}
+
+// [retailer_base_rank_modifier, coverage_base]
+const RETAILER_QUALITY = {
+  'Walmart CA':               [6, 72],
+  'Loblaws':                  [4, 82],
+  'No Frills':                [9, 55],
+  'Metro':                    [7, 68],
+  'Real Canadian Superstore': [5, 74],
+  'Costco':                   [3, 85],
+  'Sobeys':                   [7, 65],
+};
+const KW_BASE_RANK = {
+  'frozen fries':    5,
+  'potato chips':    7,
+  'savory snacks':   9,
+  'pineapple juice': 6,
+  'apple juice':     4,
+};
+
+const RETAILER_DATA = {};
+RETAILERS.forEach(r => {
+  RETAILER_DATA[r] = {};
+  const [rq, cq] = RETAILER_QUALITY[r];
+  KEYWORDS.forEach(k => {
+    const baseRank = Math.max(1, KW_BASE_RANK[k] + rq - 3);
+    const baseCov  = Math.min(92, cq - (KW_BASE_RANK[k] - 4) * 2);
+    RETAILER_DATA[r][k] = {
+      rank:     mkRank(baseRank, r, k),
+      coverage: mkCov(baseCov, r, k),
+    };
+  });
+});
+
+// SKU data
+const SKU_PRODUCTS = {
+  'frozen fries':    [
+    {id:'LAS-F01', name:'Lassonde Crispy Fries 900g'},
+    {id:'LAS-F02', name:'Lassonde Shoestring Fries 750g'},
+    {id:'MCN-F01', name:"McCain Superfries 1.5kg"},
+    {id:'ORE-F01', name:'Ore-Ida Golden Fries 1.2kg'},
+    {id:'CAP-F01', name:"Captain's Table Fries 850g"},
+  ],
+  'potato chips':    [
+    {id:'LAS-C01', name:'Lassonde Kettle Chips 200g'},
+    {id:'LAY-C01', name:"Lay's Classic 215g"},
+    {id:'RUF-C01', name:"Ruffles All Dressed 220g"},
+    {id:'PRI-C01', name:'Pringles Original 165g'},
+    {id:'KET-C01', name:'Kettle Brand Sea Salt 198g'},
+  ],
+  'savory snacks':   [
+    {id:'LAS-S01', name:'Lassonde Veggie Straws 150g'},
+    {id:'LAS-S02', name:'Lassonde Cheddar Puffs 175g'},
+    {id:'CHE-S01', name:'Cheetos Crunchy 285g'},
+    {id:'DOR-S01', name:'Doritos Nacho Cheese 255g'},
+    {id:'POP-S01', name:'Popcorners Sea Salt 142g'},
+  ],
+  'pineapple juice': [
+    {id:'LAS-P01', name:'Lassonde Pineapple Juice 1L'},
+    {id:'LAS-P02', name:'Lassonde Pineapple Juice 1.75L'},
+    {id:'OAS-P01', name:'Oasis Pineapple Cocktail 1.75L'},
+    {id:'DEL-P01', name:"Del Monte Pineapple Juice 1L"},
+    {id:'DOL-P01', name:'Dole Pineapple Juice 1.36L'},
+  ],
+  'apple juice':     [
+    {id:'LAS-A01', name:'Lassonde Apple Juice 1L'},
+    {id:'LAS-A02', name:'Lassonde Apple Juice 1.75L'},
+    {id:'OAS-A01', name:'Oasis Apple Juice 1.75L'},
+    {id:'ALL-A01', name:"Allen's Apple Juice 2L"},
+    {id:'ROU-A01', name:'Rougemont Apple Juice 1L'},
+    {id:'MOT-A01', name:"Mott's Apple Juice 1.89L"},
+  ],
+};
+
+// Generate SKU-level monthly ranks (null = not ranked)
+function mkSkuRanks(baseRank, skuIndex, r, k, skuId) {
+  const rand = seededRand(strToSeed(r + k + skuId));
+  return MONTHS.map((m, i) => {
+    if (skuIndex > 0 && rand() < 0.08) return null; // occasional not-ranked for non-lead SKUs
+    let v = baseRank + skuIndex * 2 + Math.round((rand() - 0.5) * 3);
+    if (i === 8) v = Math.min(20, v + Math.round(2 + rand() * 3));
+    v = Math.max(1, Math.min(20, v));
+    return v;
+  });
+}
+
+const SKU_DATA = {};
+RETAILERS.forEach(r => {
+  SKU_DATA[r] = {};
+  KEYWORDS.forEach(k => {
+    const base = RETAILER_DATA[r][k].rank;
+    const avgBase = Math.round(base.reduce((a,b)=>a+b,0)/base.length);
+    SKU_DATA[r][k] = SKU_PRODUCTS[k].map((sku, si) => ({
+      id: sku.id,
+      name: sku.name,
+      ranks: mkSkuRanks(avgBase, si, r, k, sku.id),
+    }));
+  });
+});
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+const state = {
+  retailer: 'All',
+  keyword:  'All',
+  openPanel: null,
+  openPanelRetailer: null,
+  selectedDetailRetailer: null,
+  selectedDetailKeyword: null,
+  rankChart: null,
+  coverageChart: null,
+};
+
+// ─── CHART COLORS ─────────────────────────────────────────────────────────────
+const CHART_COLORS = [
+  '#6366f1','#10b981','#f59e0b','#ef4444','#3b82f6','#8b5cf6','#ec4899'
+];
+const KW_COLORS = [
+  '#6366f1','#10b981','#f59e0b','#ef4444','#3b82f6'
+];
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function avg(arr) {
+  const valid = arr.filter(v => v !== null && v !== undefined);
+  return valid.length ? valid.reduce((a,b)=>a+b,0)/valid.length : 0;
+}
+
+function rankBadgeClass(r) {
+  if (r <= 5)  return 'badge-green';
+  if (r <= 12) return 'badge-amber';
+  return 'badge-red';
+}
+
+function covBadgeClass(c) {
+  if (c >= 80) return 'badge-green';
+  if (c >= 50) return 'badge-amber';
+  return 'badge-red';
+}
+
+function trendArrow(vals) {
+  // compare first 3 months avg vs last 3 months avg (for rank: higher = worse)
+  const first3 = avg(vals.slice(0,3));
+  const last3  = avg(vals.slice(-3));
+  const diff = last3 - first3;
+  if (Math.abs(diff) < 0.5) return {html:'→', cls:'trend-flat'};
+  // For rank: going up = worse; coverage: going up = better
+  return diff > 0
+    ? {html:'▲', cls:'trend-bad'}
+    : {html:'▼', cls:'trend-good'};
+}
+
+function trendArrowCov(vals) {
+  const first3 = avg(vals.slice(0,3));
+  const last3  = avg(vals.slice(-3));
+  const diff = last3 - first3;
+  if (Math.abs(diff) < 1) return {html:'→', cls:'trend-flat'};
+  return diff > 0
+    ? {html:'▲', cls:'trend-good'} // coverage up = good
+    : {html:'▼', cls:'trend-bad'};
+}
+
+function computeRetailerSummary(retailer, keyword) {
+  // avg across all keywords (or specific keyword)
+  const kws = keyword === 'All' ? KEYWORDS : [keyword];
+  let allRanks = [], allCovs = [];
+  kws.forEach(k => {
+    allRanks = allRanks.concat(RETAILER_DATA[retailer][k].rank);
+    allCovs  = allCovs.concat(RETAILER_DATA[retailer][k].coverage);
+  });
+  const avgRank = avg(allRanks);
+  const avgCov  = avg(allCovs);
+  // last 3 months
+  let last3Ranks = [], last3Covs = [];
+  kws.forEach(k => {
+    last3Ranks = last3Ranks.concat(RETAILER_DATA[retailer][k].rank.slice(-3));
+    last3Covs  = last3Covs.concat(RETAILER_DATA[retailer][k].coverage.slice(-3));
+  });
+  return { avgRank, avgCov, last3Ranks, last3Covs };
+}
+
+function computeKeywordSummary(retailer, keyword) {
+  const d = RETAILER_DATA[retailer][keyword];
+  return {
+    avgRank: avg(d.rank),
+    avgCov:  avg(d.coverage),
+    rankTrend: trendArrow(d.rank),
+    covTrend: trendArrowCov(d.coverage),
+  };
+}
+
+// Build sparkline SVG bars
+function sparklineRank(retailer, keyword) {
+  // last 3 months ranks: shorter bar = better rank (inverted)
+  const kws = keyword === 'All' ? KEYWORDS : [keyword];
+  // avg across keywords per last 3 months
+  const last3 = MONTHS.slice(-3).map((m, i) => {
+    let vals = kws.map(k => RETAILER_DATA[retailer][k].rank[9+i]);
+    return avg(vals);
+  });
+  const maxR = 20;
+  return last3.map((r, i) => {
+    const heightPct = (1 - (r-1)/(maxR-1)) * 100;
+    const h = Math.max(10, Math.round(heightPct * 0.28));
+    const color = r <= 5 ? '#16a34a' : r <= 12 ? '#f59e0b' : '#ef4444';
+    return `<div class="spark-bar" style="height:${h}px;background:${color};"></div>`;
+  }).join('');
+}
+
+function sparklineCov(retailer, keyword) {
+  const kws = keyword === 'All' ? KEYWORDS : [keyword];
+  const last3 = MONTHS.slice(-3).map((m, i) => {
+    let vals = kws.map(k => RETAILER_DATA[retailer][k].coverage[9+i]);
+    return avg(vals);
+  });
+  return last3.map((c, i) => {
+    const h = Math.max(4, Math.round(c * 0.28));
+    const color = c >= 80 ? '#16a34a' : c >= 50 ? '#f59e0b' : '#ef4444';
+    return `<div class="spark-bar" style="height:${h}px;background:${color};"></div>`;
+  }).join('');
+}
+
+// ─── RENDER RANKING CARDS ─────────────────────────────────────────────────────
+function renderRankingCards() {
+  const grid = document.getElementById('ranking-cards');
+  const retailers = state.retailer === 'All' ? RETAILERS : [state.retailer];
+  grid.innerHTML = retailers.map(r => {
+    const sum = computeRetailerSummary(r, state.keyword);
+    const rank = sum.avgRank.toFixed(1);
+    const badgeCls = rankBadgeClass(parseFloat(rank));
+    const isActive = state.openPanel === 'ranking' && state.openPanelRetailer === r;
+    return `
+      <div class="retailer-card${isActive?' active':''}" onclick="toggleRankingPanel('${r}')">
+        <div class="retailer-name">${r}</div>
+        <div class="card-meta">
+          <span class="badge ${badgeCls}">Rank ${rank}</span>
+        </div>
+        <div class="sparkline-wrap">${sparklineRank(r, state.keyword)}</div>
+        <div class="card-hint">Click to explore keywords →</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ─── RENDER COVERAGE CARDS ────────────────────────────────────────────────────
+function renderCoverageCards() {
+  const grid = document.getElementById('coverage-cards');
+  const retailers = state.retailer === 'All' ? RETAILERS : [state.retailer];
+  grid.innerHTML = retailers.map(r => {
+    const sum = computeRetailerSummary(r, state.keyword);
+    const cov = sum.avgCov.toFixed(1);
+    const badgeCls = covBadgeClass(parseFloat(cov));
+    const isActive = state.openPanel === 'coverage' && state.openPanelRetailer === r;
+    return `
+      <div class="retailer-card${isActive?' coverage-active':''}" onclick="toggleCoveragePanel('${r}')">
+        <div class="retailer-name">${r}</div>
+        <div class="card-meta">
+          <span class="badge ${badgeCls}">${cov}%</span>
+        </div>
+        <div class="sparkline-wrap">${sparklineCov(r, state.keyword)}</div>
+        <div class="card-hint">Click to explore keywords →</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ─── PANEL LOGIC ──────────────────────────────────────────────────────────────
+function toggleRankingPanel(retailer) {
+  if (state.openPanel === 'ranking' && state.openPanelRetailer === retailer) {
+    closePanel('ranking');
+  } else {
+    openRankingPanel(retailer);
+  }
+}
+
+function toggleCoveragePanel(retailer) {
+  if (state.openPanel === 'coverage' && state.openPanelRetailer === retailer) {
+    closePanel('coverage');
+  } else {
+    openCoveragePanel(retailer);
+  }
+}
+
+function openRankingPanel(retailer) {
+  // Close coverage panel first
+  document.getElementById('coverage-panel').classList.remove('open');
+  state.openPanel = 'ranking';
+  state.openPanelRetailer = retailer;
+
+  document.getElementById('ranking-panel-title').textContent = `${retailer} · Keyword Ranking`;
+
+  const kws = state.keyword === 'All' ? KEYWORDS : [state.keyword];
+  const body = document.getElementById('ranking-panel-body');
+  body.innerHTML = kws.map(k => {
+    const sum = computeKeywordSummary(retailer, k);
+    const isSelected = state.selectedDetailRetailer === retailer && state.selectedDetailKeyword === k;
+    const rankBadge = `<span class="badge ${rankBadgeClass(sum.avgRank)}">#${sum.avgRank.toFixed(1)}</span>`;
+    const covBadge  = `<span class="badge ${covBadgeClass(sum.avgCov)}">${sum.avgCov.toFixed(1)}%</span>`;
+    const tr = sum.rankTrend;
+    return `
+      <div class="panel-kw-row${isSelected?' selected':''}" onclick="selectDetail('${retailer}','${k}')">
+        <div class="panel-kw-name">${k}</div>
+        ${rankBadge}
+        ${covBadge}
+        <span class="trend-arrow ${tr.cls}">${tr.html}</span>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('ranking-panel').classList.add('open');
+  renderRankingCards();
+}
+
+function openCoveragePanel(retailer) {
+  document.getElementById('ranking-panel').classList.remove('open');
+  state.openPanel = 'coverage';
+  state.openPanelRetailer = retailer;
+
+  document.getElementById('coverage-panel-title').textContent = `${retailer} · Keyword Coverage`;
+
+  const kws = state.keyword === 'All' ? KEYWORDS : [state.keyword];
+  const body = document.getElementById('coverage-panel-body');
+  body.innerHTML = kws.map(k => {
+    const sum = computeKeywordSummary(retailer, k);
+    const isSelected = state.selectedDetailRetailer === retailer && state.selectedDetailKeyword === k;
+    const covBadge  = `<span class="badge ${covBadgeClass(sum.avgCov)}">${sum.avgCov.toFixed(1)}%</span>`;
+    const rankBadge = `<span class="badge ${rankBadgeClass(sum.avgRank)}">#${sum.avgRank.toFixed(1)}</span>`;
+    const tr = sum.covTrend;
+    return `
+      <div class="panel-kw-row${isSelected?' selected':''}" onclick="selectDetail('${retailer}','${k}')">
+        <div class="panel-kw-name">${k}</div>
+        ${covBadge}
+        ${rankBadge}
+        <span class="trend-arrow ${tr.cls}">${tr.html}</span>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('coverage-panel').classList.add('open');
+  renderCoverageCards();
+}
+
+function closePanel(type) {
+  document.getElementById(`${type}-panel`).classList.remove('open');
+  if (state.openPanel === type) {
+    state.openPanel = null;
+    state.openPanelRetailer = null;
+  }
+  if (type === 'ranking') renderRankingCards();
+  else renderCoverageCards();
+}
+
+// ─── DETAIL TABLE ─────────────────────────────────────────────────────────────
+function selectDetail(retailer, keyword) {
+  state.selectedDetailRetailer = retailer;
+  state.selectedDetailKeyword  = keyword;
+  renderDetailTable(retailer, keyword);
+  // Refresh panel to show selection highlight
+  if (state.openPanel === 'ranking') openRankingPanel(retailer);
+  else if (state.openPanel === 'coverage') openCoveragePanel(retailer);
+}
+
+function renderDetailTable(retailer, keyword) {
+  const section = document.getElementById('detail-section');
+  document.getElementById('detail-title').textContent = `🔍 Detail View: ${retailer} / ${keyword}`;
+
+  const skus = SKU_DATA[retailer][keyword];
+  const covData = RETAILER_DATA[retailer][keyword].coverage;
+
+  function cellClass(v) {
+    if (v === null) return 'cell-null';
+    if (v <= 3)  return 'cell-r1';
+    if (v <= 7)  return 'cell-r2';
+    if (v <= 12) return 'cell-r3';
+    return 'cell-r4';
+  }
+  function covCellClass(v) {
+    if (v >= 80) return 'cell-r1';
+    if (v >= 60) return 'cell-r2';
+    if (v >= 40) return 'cell-r3';
+    return 'cell-r4';
+  }
+
+  const monthCols = MONTHS.map(m => `<th>${m}</th>`).join('');
+  const skuRows = skus.map(sku => {
+    const cells = sku.ranks.map(v => {
+      const cls = cellClass(v);
+      return `<td><span class="${cls}">${v !== null ? v : '—'}</span></td>`;
+    }).join('');
+    return `<tr><td>${sku.id}</td><td>${sku.name}</td>${cells}</tr>`;
+  }).join('');
+
+  const covRow = covData.map(v => {
+    const cls = covCellClass(v);
+    return `<td><span class="${cls}">${v}%</span></td>`;
+  }).join('');
+
+  document.getElementById('detail-table').innerHTML = `
+    <thead>
+      <tr>
+        <th>SKU ID</th>
+        <th>Product Name</th>
+        ${monthCols}
+      </tr>
+    </thead>
+    <tbody>
+      ${skuRows}
+      <tr class="coverage-row">
+        <td colspan="2">📊 Coverage</td>
+        ${covRow}
+      </tr>
+    </tbody>
+  `;
+
+  section.classList.add('visible');
+  setTimeout(() => section.scrollIntoView({ behavior:'smooth', block:'start' }), 100);
+}
+
+function closeDetail() {
+  document.getElementById('detail-section').classList.remove('visible');
+  state.selectedDetailRetailer = null;
+  state.selectedDetailKeyword  = null;
+}
+
+// ─── CHARTS ───────────────────────────────────────────────────────────────────
+function renderCharts() {
+  if (state.rankChart)     { state.rankChart.destroy();     state.rankChart = null; }
+  if (state.coverageChart) { state.coverageChart.destroy(); state.coverageChart = null; }
+
+  const rCtx = document.getElementById('rankChart').getContext('2d');
+  const cCtx = document.getElementById('coverageChart').getContext('2d');
+
+  let rankDatasets, covDatasets;
+
+  if (state.retailer === 'All') {
+    // One line per retailer, averaged across selected keyword(s)
+    const kws = state.keyword === 'All' ? KEYWORDS : [state.keyword];
+    rankDatasets = RETAILERS.map((r, i) => ({
+      label: r,
+      data: MONTHS.map((m, mi) => {
+        const vals = kws.map(k => RETAILER_DATA[r][k].rank[mi]);
+        return parseFloat(avg(vals).toFixed(2));
+      }),
+      borderColor: CHART_COLORS[i],
+      backgroundColor: CHART_COLORS[i]+'22',
+      tension: 0.3,
+      pointRadius: 3,
+      borderWidth: 2,
+    }));
+    covDatasets = RETAILERS.map((r, i) => ({
+      label: r,
+      data: MONTHS.map((m, mi) => {
+        const vals = kws.map(k => RETAILER_DATA[r][k].coverage[mi]);
+        return parseFloat(avg(vals).toFixed(2));
+      }),
+      borderColor: CHART_COLORS[i],
+      backgroundColor: CHART_COLORS[i]+'22',
+      tension: 0.3,
+      pointRadius: 3,
+      borderWidth: 2,
+    }));
+  } else {
+    // One line per keyword for the selected retailer
+    const kws = state.keyword === 'All' ? KEYWORDS : [state.keyword];
+    rankDatasets = kws.map((k, i) => ({
+      label: k,
+      data: MONTHS.map((m, mi) => RETAILER_DATA[state.retailer][k].rank[mi]),
+      borderColor: KW_COLORS[i],
+      backgroundColor: KW_COLORS[i]+'22',
+      tension: 0.3,
+      pointRadius: 3,
+      borderWidth: 2,
+    }));
+    covDatasets = kws.map((k, i) => ({
+      label: k,
+      data: MONTHS.map((m, mi) => RETAILER_DATA[state.retailer][k].coverage[mi]),
+      borderColor: KW_COLORS[i],
+      backgroundColor: KW_COLORS[i]+'22',
+      tension: 0.3,
+      pointRadius: 3,
+      borderWidth: 2,
+    }));
+  }
+
+  const commonOpts = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: { font: { family: 'Poppins', size: 10 }, boxWidth: 10, padding: 8 }
+      },
+    },
+    scales: {
+      x: {
+        ticks: { font: { family: 'Poppins', size: 10 }, maxRotation: 45 },
+        grid: { color: '#f1f5f9' },
+      },
+    },
+  };
+
+  state.rankChart = new Chart(rCtx, {
+    type: 'line',
+    data: { labels: MONTHS, datasets: rankDatasets },
+    options: {
+      ...commonOpts,
+      scales: {
+        ...commonOpts.scales,
+        y: {
+          reverse: true,
+          min: 1,
+          max: 20,
+          ticks: { font: { family: 'Poppins', size: 10 }, stepSize: 4 },
+          grid: { color: '#f1f5f9' },
+          title: { display: true, text: 'Rank (1=best)', font: { family: 'Poppins', size: 10 } },
+        },
+      },
+    },
+  });
+
+  state.coverageChart = new Chart(cCtx, {
+    type: 'line',
+    data: { labels: MONTHS, datasets: covDatasets },
+    options: {
+      ...commonOpts,
+      scales: {
+        ...commonOpts.scales,
+        y: {
+          min: 0,
+          max: 100,
+          ticks: {
+            font: { family: 'Poppins', size: 10 },
+            callback: v => v+'%',
+          },
+          grid: { color: '#f1f5f9' },
+          title: { display: true, text: 'Coverage %', font: { family: 'Poppins', size: 10 } },
+        },
+      },
+    },
+  });
+}
+
+// ─── FILTER HANDLERS ──────────────────────────────────────────────────────────
+function setRetailerFilter(retailer) {
+  state.retailer = retailer;
+  // Update pills
+  document.querySelectorAll('.filter-row:first-child .pill').forEach(p => {
+    p.classList.toggle('active', p.textContent.trim() === retailer);
+  });
+  // Close panels, reset detail
+  closePanel('ranking');
+  closePanel('coverage');
+  closeDetail();
+  renderAll();
+}
+
+function setKeywordFilter(keyword) {
+  state.keyword = keyword;
+  document.querySelectorAll('.filter-row:last-child .pill').forEach(p => {
+    p.classList.toggle('active', p.textContent.trim() === keyword);
+  });
+  closePanel('ranking');
+  closePanel('coverage');
+  closeDetail();
+  renderAll();
+}
+
+function renderAll() {
+  renderRankingCards();
+  renderCoverageCards();
+  renderCharts();
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+renderAll();
+</script>
+</body>
+</html>
