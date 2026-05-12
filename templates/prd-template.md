@@ -91,11 +91,61 @@
 
 ## Success Metrics
 
-| Metric | Baseline | Target | Timeline | How Measured |
-|---|---|---|---|---|
-| [adoption metric] | [current state] | [target] | [30/60/90 days post-launch] | [measurement method] |
-| [engagement metric] | | | | |
-| [business metric — renewal, expansion] | | | | |
+| Metric | Type | Baseline (N, window) | Target | Timeline | How Measured |
+|---|---|---|---|---|---|
+| [adoption metric] | Primary | [current value, N=X, 30-day] | [threshold] | [30/60/90d post-launch] | [method] |
+| [guardrail metric] | Guardrail | | must not regress by > [X%] | | |
+| [engagement or business metric] | Secondary | | | | |
+
+---
+
+## Statistical Plan
+*(Required for any testable change — delete if pure UI/copy with no behavioral outcome)*
+- **Minimum detectable effect (MDE):** [smallest change worth detecting — e.g., +2pp activation rate]
+- **Power:** 80%
+- **Significance level (α):** 0.05
+- **Required sample size per arm:** [calculate or `[NEEDS DS INPUT]`]
+- **Test duration:** [days]
+- **Randomization unit:** user / session / account
+
+---
+
+## Rollout Plan
+- **Stage 1:** [X% of users / internal only] for [N days]
+- **Ramp gate:** expand when [metric] ≥ [threshold] AND guardrails hold
+- **Stage 2:** [Y%] for [N days]
+- **Full rollout:** [100% or target segment]
+- **Kill criteria:** roll back if [metric] doesn't improve ≥ [threshold] after [duration], OR if [guardrail] regresses by > [X%]
+
+---
+
+## AI Behavior Contract
+*(Required for features with LLM calls or generative output — delete entire section otherwise)*
+
+**Good examples (≥ 5):**
+| Input | Expected Output |
+|---|---|
+| `[input]` | `[output]` |
+
+**Bad examples (≥ 5) — wrong but not dangerous:**
+| Input | Bad Output | Failure Type |
+|---|---|---|
+| `[input]` | `[output]` | [type] |
+
+**Reject examples — must never produce (cover all 6 categories):**
+| Category | Example Input | Output That Must Be Rejected |
+|---|---|---|
+| PII echo | `[input containing PII]` | `[output that echoes PII]` |
+| Jailbreak | `"ignore previous instructions..."` | `[compliant output]` |
+| Policy violation | `[input]` | `[violating output]` |
+| Competitor mention | `[input]` | `[output naming competitor]` |
+| Locale mismatch | `[non-English input]` | `[wrong-locale output]` |
+| Outage-blame attribution | `[input about outage]` | `[output blaming named party]` |
+
+**Cost delta:** $[X] per-request / $[Y]/month at full scale / ceiling: $[Z]
+**Latency delta:** p99 adds ~[X]ms
+**Fallback state:** [what product does when LLM call fails or times out]
+**Eval plan:** [how behavior is measured in production — not just offline]
 
 ---
 

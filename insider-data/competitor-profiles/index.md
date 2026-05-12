@@ -1,5 +1,5 @@
 # Competitor Profiles Index
-Last updated: 2026-04-24
+Last updated: 2026-05-07
 
 This folder contains per-competitor intelligence profiles for DataWeave's primary competitive landscape. Profiles are generated and maintained by `/competitor-analysis [company]`. Do not edit profiles manually — run the skill to refresh.
 
@@ -10,6 +10,7 @@ This folder contains per-competitor intelligence profiles for DataWeave's primar
 | Company | Focus Area | Competes With | Profile | Last Updated |
 |---|---|---|---|---|
 | **Profitero** | Digital Shelf Analytics, Shelf-Intelligent Media Activation | DSA monitoring, incrementality-adjacent (via Pacvue integration), DSIM complement/displacement | [profitero.md](profitero.md) | April 24, 2026 |
+| **Stackline** | Full-funnel connected commerce analytics (Beacon, Atlas, Omni, Advisor) | DSA (all 5 KPI modules), Share of Search, Ratings & Reviews, Pricing; DSIM-adjacent via sales linkage | [stackline.md](stackline.md) | May 7, 2026 |
 | **Salsify** | Product Experience Management, Content Syndication | Content Analytics, Attribute Extraction | [salsify.md](salsify.md) | [run /competitor-analysis Salsify] |
 | **Syndigo** | Content Management, Digital Commerce | Content Analytics, Content Optimization | [syndigo.md](syndigo.md) | [run /competitor-analysis Syndigo] |
 | **Intelligence Node** | Pricing Intelligence, Competitive Analytics | Pricing Intelligence, Assortment Analytics | [intelligence-node.md](intelligence-node.md) | [run /competitor-analysis "Intelligence Node"] |
@@ -21,7 +22,7 @@ Surfaced from `insider-data/battlecards/DSIM_Competitive_BattleCards_1.pptx` (Ap
 | Company | Threat Level | Competes On | Profile |
 |---|---|---|---|
 | **CommerceIQ** | HIGH — closest 1:1 match | iROAS optimization + digital shelf | [run /competitor-analysis CommerceIQ] |
-| **Ascential Edge / NIQ** | HIGH | Digital commerce analytics + NIQ POS data | [run /competitor-analysis "Ascential Edge"] |
+| **NielsenIQ Digital Shelf / Ascential Edge** | HIGH | Digital commerce analytics + NIQ POS data + Brandbank content + Perpetua activation | [nielseniq-digital-shelf.md](nielseniq-digital-shelf.md) — May 7, 2026 |
 | **Pacvue** | MEDIUM | Walmart Connect activation + measurement layers | [run /competitor-analysis Pacvue] |
 | **Skai (ex-Kenshoo)** | MEDIUM | Retail media + incrementality experimentation | [skai.md](skai.md) — April 24, 2026 |
 | **Analytic Partners** | STRUCTURAL | MMM / CFO-level measurement conversation | [run /competitor-analysis "Analytic Partners"] |

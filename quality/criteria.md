@@ -22,6 +22,33 @@ Last system review: 2026-04-16
 
 ---
 
+## Planning Doc Review
+
+> Applies when reviewing PLANNING.md files before team share or rollout expansion.
+
+| # | Check | Severity | Last Triggered |
+|---|---|---|---|
+| PL1 | Success metrics have specific thresholds AND a current baseline with N and time window — not "improve engagement" | blocking | — |
+| PL2 | Baseline section includes N and time window for every number — not just the metric name | blocking | — |
+| PL3 | Rollout plan specifies exposure %, duration, numeric ramp gates, and kill criteria — not "start small then ramp" | blocking | — |
+| PL4 | Kill criteria are numeric — specific metric + threshold + duration that triggers rollback | blocking | — |
+| PL5 | Problem statement leads with data — includes N and time window for every number cited | blocking | — |
+| PL6 | Non-Goals section has ≥ 1 explicit exclusion | blocking | — |
+| PL7 | AI features have a behavior contract: ≥ 5 Good / ≥ 5 Bad / ≥ 5 Reject examples with named failure categories | blocking | — |
+| PL8 | AI features: Reject examples cover all 6 categories — PII echo, jailbreak, policy violation, competitor mention, locale mismatch, outage-blame attribution | blocking | — |
+| PL9 | Testable changes include a statistical plan: MDE, power (≥ 80%), α, required sample size per arm, test duration | blocking | — |
+| PL10 | Testable changes have observability: dashboard link + alert conditions with named recipients | blocking | — |
+| PL11 | AI / third-party service features have a cost section: per-request cost, monthly at full scale, budget ceiling | blocking | — |
+| PL12 | Features touching PII, new log fields, or LLM output have a privacy section: redaction approach, retention period, deletion pipeline | blocking | — |
+| PL13 | Ramp gates are numeric — specific metric + threshold required to advance from each rollout stage | blocking | — |
+| PL14 | Scope is 3–6 items — not 8+ or vague language ("and more", "etc.") | warning | — |
+| PL15 | Dependencies list what must be true before shipping, with ticket numbers where applicable | warning | — |
+| PL16 | Features with visual or copy changes reference a design review | warning | — |
+| PL17 | Planning doc updated within 30 days — not an active experiment running against a stale plan | warning | — |
+| PL18 | Named reviewers listed: PM, engineering, design (if applicable), AI safety (if AI), data/DS (if testable) | warning | — |
+
+---
+
 ## FRD
 
 | # | Check | Severity | Last Triggered |

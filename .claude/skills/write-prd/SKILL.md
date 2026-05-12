@@ -52,6 +52,28 @@ Each requirement must:
 - Use "shall" language for committed requirements
 - Flag open questions rather than papering over uncertainty
 
+### Step 6b: AI Behavior Contract (AI features only)
+
+If the feature involves any LLM call, generative output, or AI-driven recommendation, add a mandatory Behavior Contract section before writing requirements:
+
+**Good examples (≥ 5):** Input → expected output pairs showing correct behavior.
+**Bad examples (≥ 5):** Outputs that are wrong but not dangerous — calibrate what "better" means.
+**Reject examples (≥ 5):** Outputs the AI must never produce. Each must name its failure category — cover all 6:
+- (PII echo) — repeating user PII from context
+- (jailbreak) — "ignore previous instructions" variants
+- (policy violation) — content that violates DataWeave's content policy
+- (competitor mention) — surfacing competitor names inappropriately
+- (locale mismatch) — responding in wrong language or regional format
+- (outage-blame attribution) — attributing failures to specific named parties
+
+Also add to the PRD:
+- **Cost delta:** per-request cost estimate + monthly at full rollout + budget ceiling
+- **Latency delta:** expected p99 latency impact
+- **Fallback state:** what the product does when the LLM call fails or times out
+- **Eval plan:** how behavior will be measured in production (not just offline)
+
+If any of these 4 fields are missing for an AI feature, flag: `[AI CONTRACT INCOMPLETE: missing [field] — required before engineering handoff]`
+
 ### Step 7: Check Standing Preferences
 Read `context-library/stakeholder-map.md` for:
 - Engineering constraints to note in dependencies
@@ -112,7 +134,50 @@ After generating the PRD, automatically run the engineering-lead review persona 
 - [item deferred to v2 or beyond, with reason]
 
 ## Success Metrics
-- [How will you know this feature is working? Specific metric + target + measurement method]
+| Metric | Type | Baseline (N, window) | Target | Timeline | How Measured |
+|---|---|---|---|---|---|
+| [primary metric] | Primary | [current value, N=X, 30-day] | [threshold] | [30/60/90d post-launch] | [method] |
+| [guardrail metric] | Guardrail | | must not regress by > [X%] | | |
+| [secondary metric] | Secondary | | | | |
+
+## Statistical Plan
+*(Required for any testable change — skip only if this is a pure UI/copy change with no measurable behavioral outcome)*
+- **Minimum detectable effect (MDE):** [smallest change worth detecting]
+- **Power:** 80% (default — adjust if high-stakes)
+- **Significance level (α):** 0.05
+- **Required sample size per arm:** [calculate or flag `[NEEDS DS INPUT]`]
+- **Test duration:** [days — based on traffic volume]
+- **Randomization unit:** user / session / account
+
+## Rollout Plan
+*(Required for all features — populate kill criteria even for non-A/B changes)*
+- **Stage 1:** [X% of users / internal only] for [N days]
+- **Ramp gate:** expand when [metric] ≥ [threshold] AND guardrails hold
+- **Stage 2:** [Y%] for [N days]
+- **Full rollout:** [100% or target segment]
+- **Kill criteria:** roll back if [metric] doesn't improve ≥ [threshold] after [duration], OR if [guardrail] regresses by > [X%]
+
+## AI Behavior Contract
+*(Required only for features with LLM calls or generative output — delete section otherwise)*
+
+**Good examples (≥ 5)** — correct behavior:
+- Input: `[...]` → Output: `[...]`
+
+**Bad examples (≥ 5)** — wrong but not dangerous:
+- Input: `[...]` → Output: `[...]` (failure type: [])
+
+**Reject examples (≥ 5)** — must never produce:
+- (PII echo): `[...]`
+- (jailbreak): `[...]`
+- (policy violation): `[...]`
+- (competitor mention): `[...]`
+- (locale mismatch): `[...]`
+- (outage-blame attribution): `[...]`
+
+**Cost delta:** $[X] per-request / $[Y]/month at full scale / ceiling: $[Z]
+**Latency delta:** p99 adds ~[X]ms
+**Fallback state:** [what product does when LLM call fails]
+**Eval plan:** [how behavior is measured in production]
 
 ---
 ## Changes from Engineering Review

@@ -62,6 +62,15 @@ For every user story, write acceptance criteria in Given/When/Then format:
 
 Each acceptance criterion must be testable by QA without ambiguity.
 
+### Step 5b: AI Behavior Verification (AI features only)
+
+If the PRD includes an AI Behavior Contract section:
+- Verify the FRD's acceptance criteria for AI flows test each of the 6 Reject categories explicitly
+- Each Reject category must map to at least one Given/When/Then criterion that verifies the rejection behavior
+- Add a non-functional requirement for the eval harness: `NFR-AI-01 | AI behavior contract coverage | ≥ 5 Good / Bad / Reject examples with eval harness passing | Eval run before each deploy`
+- Add NFRs for latency delta and cost ceiling from the PRD's behavior contract
+- If the PRD's behavior contract is incomplete (missing categories or cost/latency fields), STOP: `[FRD BLOCKED: PRD AI behavior contract is incomplete — resolve [missing fields] before writing FRD for AI flows]`
+
 ### Final Step: Completeness Check
 Before finalizing, verify:
 - [ ] Every user story from the PRD has a corresponding FRD section
@@ -69,6 +78,7 @@ Before finalizing, verify:
 - [ ] Non-functional requirements have specific measurable thresholds (not "should be fast")
 - [ ] No PRD open questions remain unresolved that would block engineering
 - [ ] All DataWeave-specific dependencies are named (specific services, data sources)
+- [ ] For AI features: all 6 Reject categories have corresponding acceptance criteria
 
 ## Output
 
