@@ -364,22 +364,29 @@ Could this output be sent unchanged to a PM at a different company? If yes → i
    - `/presentation-draft` → load `skills/shared/stakeholder-updates.md` for narrative frameworks
 
    ### Substack Content Archive
-   **Root:** `../Substack content/`
-   **Contains:** PDFs of AI/PM-focused newsletters + pre-extracted summaries.
+   **Root:** `insider-data/substack-content/`
+   **Contains:** 18 PDFs of AI/PM-focused newsletters from OpenAI product leaders, Substack authors, and engineering leaders.
 
-   **Access protocol:**
-   1. **Check `../Substack content/newsletter summaries/` first** — pre-extracted summaries exist for processed PDFs. Read the summary `.md` file before attempting to read the raw PDF.
-   2. **If no summary exists** for a PDF, read the PDF directly and extract relevant sections.
-   3. **Most relevant files for DataWeave PM work:**
-      - `newsletter summaries/The PMs Playbook for AI Agent Distribution (2026) — Summary.md` — agent distribution, MCP, API strategy
-      - `Are AI agents actually slowing us down_ - by Gergely Orosz.pdf` — engineering-PM collaboration on AI
-      - `PM Skills Marketplace_ An AI Operating System for Better Product Decisions.pdf` — AI-native PM workflows
-      - `The PM's Playbook for AI Agent Distribution (2026).pdf` — AI product strategy
+   **Access protocol — RELEVANCE GATE (always in this order):**
+   1. **Read `insider-data/substack-content/index.md` first.** This file maps every PDF to topic tags and provides a skill-to-index relevance map. Do NOT read any PDF content without checking this index first.
+   2. **Check the Relevance Map section** in the index for the active skill/task. Only pull PDFs whose topic tags match the current domain.
+   3. **Read matching PDFs** using the pdf-viewer skill or direct Read tool. Never read PDFs speculatively — title match required.
+   4. **Never read all 18 PDFs.** Max 2–3 per task. If the index shows no match, skip the archive entirely.
+
+   **Topic tag fast lookup (common cases):**
+   - AI evals / quality / LLM judge → indices 2, 3, 5, 15
+   - AI agents / Pro Mode / agentic → indices 4, 8, 18
+   - Observability / cost / monitoring → indices 2, 7
+   - Pricing / monetization → index 1
+   - PRD writing → index 17
+   - Product strategy / roadmap → indices 6, 10, 12, 13
+   - Context / intent engineering → indices 8, 14
+   - GTM / distribution → indices 16, 18
 
    **When to use the Substack archive:**
-   - Questions about AI product strategy, AI-native PM workflows, or engineering-PM collaboration
-   - When `/product-strategy` question involves AI features, agent distribution, or technical PM skills
-   - When `brainstorm` involves AI capabilities in DataWeave's product suite
+   - Any skill invocation touching AI features, AI agents, evals, pricing, observability, or PRD work for PRISM/AI Defensibility OKR
+   - When `/product-strategy`, `/write-prd`, `/brainstorm`, `/competitor-analysis` involve AI capabilities
+   - Always gate on index relevance — do not read content just because a PDF exists
 
 <!-- code-review-graph MCP tools -->
 ## MCP Tools: code-review-graph

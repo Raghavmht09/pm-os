@@ -1,5 +1,22 @@
 # competitive — hypotheses
-Last updated: 2026-04-24
+Last updated: 2026-05-13
+
+## H-AI-IF-01: Retail-intel category has open white space for MCP/CLI, analyst agent builder, mascot, Trust Layer
+**Observation (2026-05-13):** Cross-vendor scan of Profitero, Salsify, Syndigo, Intelligence Node, 42Signals found zero published MCP servers, zero analyst-facing agent builders, zero mascot characters, zero published Trust Layer docs. Salsify "Angie" (Oct 2025) and Syndigo "GoPilot" (Fall 2025) are names without faces, embedded in PXM workflows, not analytics. Profitero "Ask Profitero" hasn't visibly evolved since 2023 launch.
+**Why it matters:** If confirmed across 2 more quarterly scans, these are credible "category-firsts" DataWeave can claim — each one is independently defensible and stacks to a multi-dimensional moat.
+**Evidence so far:** 1 scan (2026-05-13, `research/competitive-scan.md`). Source URLs cited per claim.
+**Needs:** Re-verify Q3 2026; specifically `[VERIFY: 42Signals AI chat capability]` and `[VERIFY: Intelligence Node post-Interpublic roadmap]`.
+**Promotion trigger:** Same gap pattern observed in 3 quarterly scans → promote to rules.md as a strategic constant.
+
+## H-AI-IF-02: PXM vendors (Salsify, Syndigo) optimize TO ChatGPT shopping, not platform-as-MCP
+**Observation (2026-05-13):** Both Salsify ("OpenAI Channel") and Syndigo ("OpenAI Connect" + "Syndigo GEO") have shipped capability to publish product content into ChatGPT/LLM shopping surfaces. Neither has shipped an MCP server exposing their platform for external agents to query. This is "be found by LLMs" not "be the platform LLMs call."
+**Why it matters:** DataWeave's analytics use case is the inverse — customers want agents calling INTO their retail-intel feed. The PXM vendors' chosen direction confirms platform-as-MCP is still claimable in retail intel.
+**Evidence so far:** 1 scan (2026-05-13).
+**Promotion trigger:** Confirmed in 2 more quarterly scans → rule.
+
+---
+
+
 
 Hypotheses pending deal validation. Confirmed 3+ times → promote to rules.md. Contradicted → demote with note.
 

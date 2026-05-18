@@ -1,0 +1,385 @@
+# UX Spec: Download Options — XLSX, PDF, PNG/JPEG
+**Product:** Ask Me (DataWeave AI Analytics)
+**Author:** PM OS
+**Status:** DRAFT FOR DISCUSSION
+**Last updated:** 2026-05-13
+**Audited base:** stage.dataweave.com/query · React + Ant Design · Current: CSV only via 3-dots table menu
+
+---
+
+## 1. Functional Requirements
+
+### 1.1 Export Content per Format
+
+| Format | What it exports | Source element |
+|---|---|---|
+| **XLSX** | Data table rows (all pages, not just the visible page) + metadata tab | Data table returned in response |
+| **PDF** | Full response: narrative summary + data table + chart image (if present) | Entire response card |
+| **PNG/JPEG** | Chart image only | Chart element within response card |
+
+**All pages rule for XLSX:** The current UI paginates at 5 rows per page. XLSX must export the full dataset, not the current page view. If the backend returns 200 rows and 15 are rendered, XLSX downloads all 200. This must be called out explicitly in the engineering handoff — it requires a separate data fetch, not a DOM scrape.
+
+### 1.2 Format Availability by Response Type
+
+| Response type | XLSX | PDF | PNG/JPEG |
+|---|---|---|---|
+| **Data table only** (no chart) | ✅ Available | ✅ Available | ❌ Hidden |
+| **Data table + chart** | ✅ Available | ✅ Available | ✅ Available |
+| **Chart only** (no table) | ❌ Hidden | ✅ Available | ✅ Available |
+| **Text/narrative only** (no table, no chart) | ❌ Hidden | ✅ Available | ❌ Hidden |
+| **Out-of-scope / error response** | ❌ Hidden | ❌ Hidden | ❌ Hidden |
+
+The download action itself is hidden entirely for out-of-scope or error responses — do not show a disabled button. Disabled buttons invite support tickets asking why it's greyed out.
+
+### 1.3 File Naming Convention
+
+Pattern: `dataweave_[query-slug]_[YYYY-MM-DD].[ext]`
+
+- `query-slug`: first 40 characters of the query, lowercased, spaces replaced with hyphens, special characters stripped
+- `YYYY-MM-DD`: local date at time of export
+- `ext`: `xlsx` / `pdf` / `png` or `jpeg`
+
+**Examples:**
+- `dataweave_assortment-gap-across-category-and-sub-cat_2026-05-13.xlsx`
+- `dataweave_top-discounted-skus-by-competitor-this-week_2026-05-13.pdf`
+- `dataweave_out-of-stock-percentage-by-category_2026-05-13.png`
+
+If the query slug is empty (edge case on re-run without visible query text), fall back to `dataweave_export_[timestamp].[ext]`.
+
+### 1.4 Error Handling
+
+| Failure mode | User-facing behavior |
+|---|---|
+| Export generation fails (server-side or client-side exception) | Ant Design `notification.error` toast: "Export failed. Try again or contact support." with **Retry** action button. Auto-dismisses after 8 seconds. |
+| Partial data (e.g. table fetch for XLSX times out) | Do not silently export a truncated file. Show: "Could not fetch full dataset. Download may be incomplete — continue?" with Confirm / Cancel. |
+| No chart present but PNG/JPEG triggered (shouldn't happen per availability logic above) | Log error silently. Do not surface to user. |
+| PDF generation times out (>30s) | Toast: "PDF is taking longer than expected. We'll notify you when it's ready." [ASSUMPTION: async delivery via in-app notification requires a notification system — confirm with engineering before committing this path] |
+| Browser blocks file download | Toast: "Download blocked by browser. Check your download settings." |
+
+### 1.5 Out of Scope
+
+The following are explicitly excluded from this spec:
+
+- **Full conversation export** — exporting all responses in a session as a single file. Separate spec required; separate Jira ticket.
+- **Bulk download** — selecting multiple responses and batch-exporting. Out of scope for v1.
+- **Scheduled export / email delivery** — the Replit prototype shows "Schedule Report" in the action tray. This is a separate feature, separate spec.
+- **Google Sheets / PowerPoint export** — future consideration only.
+- **Export from search results or dashboard views** — Ask Me chat only. Other surfaces have their own download patterns.
+
+---
+
+## 2. Information Design
+
+### 2.1 XLSX Structure
+
+Two tabs. Tab order: Data first, Metadata second.
+
+**Tab 1 — "Data"**
+
+| Column behavior | Detail |
+|---|---|
+| Column headers | Match the data table column headers exactly as rendered in the UI |
+| Row count | All rows from the full dataset (not paginated view) |
+| Data types | Numbers as number cells (not text). Dates as date cells. Percentages as percentage cells. |
+| Empty cells | Render as blank. Do not fill with "N/A" or "—". |
+| Frozen header row | Yes — first row frozen so it stays visible on scroll |
+| Column widths | Auto-fit to content width, capped at 60 characters |
+| Tab color | DataWeave green (#2ECC71 or closest named color) |
+
+**Tab 2 — "Query Info"**
+
+| Field | Value |
+|---|---|
+| Query | Full query text |
+| Account | Account name (from session context) |
+| Date exported | YYYY-MM-DD HH:MM (local timezone) |
+| Timezone | User's local timezone string (e.g. "America/New_York") |
+| Total rows | Integer count |
+| Generated by | "DataWeave Ask Me" |
+| Data freshness | Last data sync timestamp if available from response metadata; otherwise omit row entirely |
+
+No styling on the metadata tab. Plain cells, no merged rows, no headers — just field/value pairs in columns A and B.
+
+### 2.2 PDF Structure
+
+**Document dimensions:** A4 portrait (210mm × 297mm). Letter (8.5in × 11in) acceptable as an alternative — confirm with users which is preferred for their market.
+
+**Section order:**
+
+1. **Header** (fixed, appears on every page)
+   - DataWeave logo (left-aligned, 32px height)
+   - Account name (right-aligned, 14pt, medium weight)
+   - Separator line (1px, light gray)
+
+2. **Query block** (page 1 only, below header)
+   - Label: "Query" in 9pt uppercase gray
+   - Query text in 12pt, italic, dark gray
+   - Export date: "Generated on [YYYY-MM-DD HH:MM TZ]" in 9pt gray, right-aligned
+
+3. **Narrative summary**
+   - Section label: "Summary" in 10pt uppercase, DataWeave green
+   - Body text: 11pt, line height 1.5
+   - Bold highlights preserved from the UI rendering
+
+4. **Data table**
+   - Section label: "Data" in 10pt uppercase, DataWeave green
+   - Table with alternating row shading (white / light gray)
+   - Header row: dark background, white text, 10pt bold
+   - Body rows: 9pt, regular
+   - If the table exceeds one page: header row repeats on each continuation page
+   - Caption below table: "[N] rows total"
+
+5. **Chart** (if present)
+   - Section label: "Visualization" in 10pt uppercase, DataWeave green
+   - Chart image centered, max width = page width minus margins
+   - Chart title rendered as caption below image (not inside the image)
+
+6. **Footer** (fixed, appears on every page)
+   - Left: "Generated by DataWeave Ask Me"
+   - Right: "Page [N] of [M]"
+   - Separator line above (1px, light gray)
+
+**Page breaks:** Insert a page break before the chart if the chart won't fit with at least 60mm of space remaining on the current page.
+
+**Margins:** 20mm all sides.
+
+### 2.3 PNG/JPEG Structure
+
+**What's included:**
+- The chart as rendered in the UI at 2× pixel ratio (retina-safe)
+- Title overlay: chart title text in white on a semi-transparent dark bar at the top of the image (24px font, 8px padding, 60% black background)
+- DataWeave watermark: "dataweave.com" in 12px light gray, bottom-right corner, 70% opacity
+
+**What's excluded:**
+- No narrative text
+- No data table
+- No query text
+- No header/footer chrome
+
+**Format choice:** PNG as the default. JPEG available as a secondary option if the user selects it in the format picker (see Section 4). PNG is preferred for charts with sharp edges and text labels; JPEG at Q85 is acceptable for photo-heavy or gradient-heavy visualizations. For most DataWeave charts (bar, line, heatmap, waterfall), PNG is the right default.
+
+**Resolution:** Minimum 1200px wide at 2× ratio. Do not allow export of low-resolution chart images — this is a sharing use case and blurry waterfall charts undercut the product's credibility.
+
+### 2.4 Format Selector UI — Labels, Icons, Descriptions
+
+Shown as a dropdown menu with three items. Each item has an icon, primary label, and a one-line description.
+
+| Icon | Primary label | Description |
+|---|---|---|
+| FileExcelOutlined (Ant Design) | Excel (.xlsx) | Spreadsheet with all data rows |
+| FilePdfOutlined (Ant Design) | PDF | Full response: summary + data + chart |
+| FileImageOutlined (Ant Design) | Image (.png) | Chart only — for presentations |
+
+The PNG/JPEG item is conditionally hidden if the response has no chart (per Section 1.2 availability rules).
+
+No nested menus. No toggle to switch between PNG and JPEG in the main dropdown — that choice is surfaced in a settings option if user demand warrants it (out of scope for v1; default PNG).
+
+---
+
+## 3. Conceptual Design
+
+### 3.1 Download Trigger Placement
+
+**Recommendation: visible icon button on the response card action row, not buried in the 3-dots menu.**
+
+Current state: Download CSV is inside 3-dots menu → Options → Download → CSV. Three clicks to get to a function users will use repeatedly in a reporting workflow.
+
+Rationale for surface-level placement:
+- The Replit PM prototype already has a dedicated action tray (Save as View, Share, **Download**, Pin, Schedule). This signals that download was always intended to be a primary action.
+- The discovery report shows repeated duplicate queries in chat history — users re-run queries instead of downloading and working offline. Surfacing the download action reduces re-run noise.
+- Business users exporting to Excel for their weekly reports will use this multiple times per session. 3-clicks-deep is friction they will blame on the product.
+
+**Implementation:** Each response card gets a persistent action row at the bottom edge. The row contains icon buttons:
+
+```
+[Thumbs up] [Thumbs down]                     [Download ↓] [Share] [Pin]
+```
+
+The download button uses `DownloadOutlined` (Ant Design icon). Clicking it opens the format picker dropdown directly below the button (not a modal). The Share and Pin icons are included here for spatial context — they are not in scope for this spec.
+
+**What happens to the 3-dots table menu:** The CSV option stays there as a convenience for power users who want raw CSV. It is not removed. The new XLSX/PDF/PNG options are only in the response-card-level action row, not duplicated in the table 3-dots menu. The 3-dots menu remains for table-specific actions (collapse rows, resize columns).
+
+### 3.2 Ant Design Components
+
+| Component | Used for |
+|---|---|
+| `Dropdown` with `Menu` | Format picker triggered by the download button |
+| `Button` (text variant, icon only) | Download trigger button in action row |
+| `notification.success` | "Download ready" confirmation |
+| `notification.error` | Export failure with Retry action |
+| `Progress` (circular, small) | Spinner during export generation (replaces button icon while in-progress) |
+| `Tooltip` | "Download" tooltip on icon button hover |
+| `Modal` | Not used for the standard download flow. Reserved for the "partial data" warning (Section 1.4) — an `confirm` modal is more appropriate than a toast for a destructive/irreversible action. |
+
+No new component library additions required. All components are already in the Ant Design dependency.
+
+### 3.3 Client-Side vs. Server-Side Generation
+
+**Recommendation: server-side generation for PDF. Client-side for XLSX and PNG.**
+
+Rationale:
+
+**XLSX — client-side** using [SheetJS (xlsx)](https://sheetjs.com/):
+- Mature, widely used in React apps
+- No server round-trip needed — data is already in the React component state
+- XLSX formatting (frozen rows, cell types, tab colors) is well-supported
+- Trade-off: bundle size addition (~200KB gzipped). Acceptable.
+
+**PDF — server-side:**
+- html2canvas + jsPDF is a common pattern but produces poor results for data-heavy content: table text often renders as an image (not real text), which fails accessibility, makes PDFs unsearchable, and produces blurry output at standard DPI
+- A server-side approach (Puppeteer or headless Chrome rendering the response card server-side, then returning a PDF blob) produces publication-quality output with real text, correct fonts, and proper page breaks
+- This is a SaaS product — customers will share these PDFs externally with their own leadership and buyers. Quality matters.
+- Trade-off: adds server latency (3–8 seconds) and server infrastructure cost. Recommend a dedicated PDF generation service or lambda, not the primary API. [ASSUMPTION: confirm with engineering whether a Puppeteer/headless lambda is feasible in the current infra — if not, a hybrid approach using react-pdf/renderer is the fallback]
+- The PDF endpoint receives: the response ID, account context, and user timezone. It re-renders the response server-side into the PDF template defined in Section 2.2.
+
+**PNG/JPEG — client-side** using [html2canvas](https://html2canvas.hertzen.com/) or native Canvas API:
+- Chart components (likely Recharts or ECharts given the React stack) expose a `toDataURL()` method on their canvas element
+- Use `toDataURL('image/png')` for PNG export — no library needed if the chart library exposes it
+- Add the title overlay and watermark via a canvas compositing step before download
+- If the chart library does not expose a canvas export method, use html2canvas scoped to the chart container only (not the full page — this avoids the font rendering issues that plague full-page html2canvas captures)
+
+### 3.4 Format Picker UX
+
+**Single-click per format via a dropdown, not a modal.**
+
+A modal adds a confirmation step that slows down a repeat action (weekly reporting). The dropdown appears immediately on click of the download button, user clicks their format, download starts. Three clicks total: response card download button → format option → file saved. That matches the mental model of saving a file.
+
+The only exception: if the export takes more than 2 seconds (PDF, XLSX with >500 rows), a progress indicator replaces the button icon mid-flow. This does not open a modal.
+
+---
+
+## 4. Interactive Design
+
+### 4.1 Trigger Location
+
+The `DownloadOutlined` icon button lives in the response card action row (see Section 3.1). It is visible by default on all response cards that have at least one available export format. It does not appear on out-of-scope or error response cards.
+
+The button has a `Tooltip` with text "Download" on hover, to disambiguate it from other icon buttons in the row.
+
+On focus (keyboard navigation), the button is reachable via Tab key and activatable via Enter or Space.
+
+### 4.2 Format Picker Flow
+
+```
+User clicks DownloadOutlined button
+→ Ant Design Dropdown opens below button
+→ Menu shows available formats for this response type (2 or 3 items)
+→ User clicks format
+→ Dropdown closes
+→ Export starts (see 4.3)
+```
+
+The dropdown closes immediately on format selection — do not keep it open while export runs. The in-progress state is communicated via the button icon change (see 4.3).
+
+Keyboard: Dropdown opens on Enter/Space. Arrow keys navigate items. Enter selects. Escape closes without action.
+
+### 4.3 Progress Indication
+
+| Format | Expected duration | Progress treatment |
+|---|---|---|
+| **XLSX** (≤500 rows) | < 1s | No spinner. File downloads immediately. Success toast. |
+| **XLSX** (>500 rows) | 1–3s | Button icon replaces with `LoadingOutlined` spinning icon. Returns to `DownloadOutlined` on completion. |
+| **PNG** | < 1s | No spinner. File downloads immediately. Success toast. |
+| **PDF** | 3–8s (server-side) | Button icon replaces with `LoadingOutlined`. Small `Progress` ring (24px, `type="circle"`, `size="small"`) appears inline next to button. Success toast on completion. |
+
+Do not use a full-page loading overlay or block the rest of the interface during export. The user should be able to continue reading or submitting new queries while the PDF generates.
+
+### 4.4 Success State
+
+**Browser download + success toast (simultaneously):**
+
+The file is delivered via browser download (the standard `<a href="blob:..." download="filename.ext">` trigger). At the same moment, an Ant Design `notification.success` appears in the top-right corner:
+
+- **XLSX:** "Excel file downloaded" · Auto-dismisses in 4s
+- **PDF:** "PDF ready — [Open]" · [Open] link opens the file if the browser allows it · Auto-dismisses in 6s
+- **PNG:** "Image downloaded" · Auto-dismisses in 4s
+
+Do not show a toast for the in-progress state. The button spinner is sufficient progress feedback. The toast fires only on completion.
+
+### 4.5 Error State
+
+Ant Design `notification.error` toast:
+
+```
+[!] Export failed
+"Could not generate your [format]. Try again."
+[Retry]  [Dismiss]
+```
+
+The `[Retry]` action re-triggers the same format export without reopening the picker. Auto-dismiss after 8 seconds if neither action is taken.
+
+For the partial data warning (XLSX with incomplete dataset fetch):
+
+```
+Ant Design Modal.confirm:
+
+Title: "Download may be incomplete"
+Body: "We couldn't fetch all [N] rows. The file will contain [M] rows retrieved so far. Download anyway?"
+OK: "Download [M] rows"
+Cancel: "Cancel"
+```
+
+### 4.6 PNG vs. JPEG Choice
+
+**Default: PNG only. No user-facing choice in v1.**
+
+PNG is the correct format for DataWeave chart types (bar, line, heatmap, waterfall — all are flat-color or text-heavy). JPEG compression introduces visible artifacts on sharp edges and text, which will look unprofessional when inserted into customer presentations.
+
+If analytics post-launch shows user requests for JPEG (e.g., users working in older email clients or tools with file size limits), add a "Download as JPEG" secondary option in a v1.1 iteration. Do not add it speculatively.
+
+The menu item label reads "Image (.png)" — this sets the correct expectation without requiring the user to understand the format tradeoff.
+
+---
+
+## 5. Claude Design Prompt
+
+Use this prompt verbatim with the Claude design tool (or Figma AI plugin) to generate the visual mockup for this feature.
+
+---
+
+**Prompt:**
+
+Design a component for a B2B SaaS AI analytics chat interface built with React and Ant Design. The interface is "Ask Me" by DataWeave — dark sidebar, DataWeave green primary (#2ECC71 equivalent), clean enterprise aesthetic.
+
+Show a single response card in the chat main area. The response card contains:
+1. A short narrative summary paragraph at the top (2 sentences, bold highlights on key numbers)
+2. A data table below the summary (5 visible rows, column headers: Subcategory | Is Overlap | Category | SKU Count, pagination controls "1-5 of 47 rows")
+3. A bar chart below the table (simple, labeled axes, DataWeave green bars)
+
+At the bottom edge of the response card, show a persistent **action row** with icon buttons spaced right-aligned:
+- Thumbs up (outlined)
+- Thumbs down (outlined)
+- (spacer)
+- Download icon (DownloadOutlined, Ant Design) — this is the **focused element**
+- Share icon (outlined)
+- Pin icon (outlined)
+
+Show the **Download dropdown open** below the download button. The dropdown is an Ant Design Menu with 3 items:
+
+| Icon | Label | Subtext |
+|---|---|---|
+| FileExcelOutlined (green) | Excel (.xlsx) | Spreadsheet with all data rows |
+| FilePdfOutlined (red) | PDF | Full response: summary + data + chart |
+| FileImageOutlined (blue) | Image (.png) | Chart only — for presentations |
+
+Show a subtle hover state on the "PDF" menu item (light background tint).
+
+Below the main card, show a **success toast** (Ant Design notification.success) in the top-right corner of the screen: "PDF ready — [Open]" with a green checkmark icon.
+
+Also show a **second state** below (or in an adjacent panel): the download button mid-progress, where the DownloadOutlined icon is replaced by a LoadingOutlined spinning icon, with a small circular progress ring (24px) next to it.
+
+Color system:
+- Primary green: #2ECC71
+- Dark sidebar: #1C1C2E
+- Card background: white
+- Text primary: #1A1A2E
+- Text secondary: #6B7280
+- Border: #E5E7EB
+
+Font: Inter or system sans-serif. Use Ant Design's default component styling.
+
+Do not add any decorative elements, gradients, or icons not specified. Keep it clean and data-forward. Enterprise SaaS, not consumer.
+
+---
+
+*End of UX spec.*
